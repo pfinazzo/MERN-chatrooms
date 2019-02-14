@@ -13,6 +13,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import NavBar from './NavBar';
+import axios from 'axios';
 
 const styles = theme => ({
   main: {
@@ -52,6 +53,24 @@ class LoginPage extends Component {
     super(props);
     this.state = {};
   }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    axios.post("/users/login", this.state).then(res => {
+      console.log(res);
+    }).catch(err => {
+      if (err) throw err;
+    })
+  }
+
+  handleFormChange = (e, name) => {
+    this.setState({
+      [name]: e.target.value
+    }, () => {
+      console.log(this.state);
+    })
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -68,12 +87,12 @@ class LoginPage extends Component {
         </Typography>
             <form className={classes.form}>
               <FormControl margin="normal" required fullWidth>
-                <InputLabel htmlFor="email">Email Address</InputLabel>
-                <Input id="email" name="email" autoComplete="email" autoFocus />
+                <InputLabel htmlFor="email">Username</InputLabel>
+                <Input onChange={(e) => this.handleFormChange(e, "username")}id="email" name="email" autoComplete="email" autoFocus />
               </FormControl>
               <FormControl margin="normal" required fullWidth>
                 <InputLabel htmlFor="password">Password</InputLabel>
-                <Input name="password" type="password" id="password" autoComplete="current-password" />
+                <Input onChange={(e) => this.handleFormChange(e, "password")}name="password" type="password" id="password" autoComplete="current-password" />
               </FormControl>
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
@@ -85,6 +104,7 @@ class LoginPage extends Component {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
+                onClick={(e) => this.handleSubmit(e)}
               >
                 Sign in
           </Button>
