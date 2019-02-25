@@ -62,10 +62,9 @@ class LoginPage extends Component {
       if (username && email && _id){
         let userData = {username, email, _id};
         setUserData(JSON.stringify(userData));
-        this.props.setUserData(userData); // set state in app
-        if (res.statusText === "OK"){
+        this.props.setUserData(res.data, () => {
           this.props.history.push('/');
-        }
+        });
       }
     }).catch(err => {
       if (err) throw err;

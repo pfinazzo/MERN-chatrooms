@@ -5,16 +5,20 @@ import Grid from '@material-ui/core/Grid/Grid';
 import TextField from '@material-ui/core/TextField';
 import NavBar from './NavBar';
 import CreateButton from './CreateButton';
+import StandardButton from './StandardButton';
+import axios from 'axios';
 
 const styles = theme => ({
   container: {
     display: 'flex',
     flexWrap: 'wrap',
+    justifyContent: 'center',
+    textAlign: 'center'
   },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200,
+    width: '100%',
   },
   dense: {
     marginTop: 19,
@@ -38,12 +42,15 @@ class CreateChatroomForm extends React.Component {
     let {user} = this.props;
     // default user to admin
     let admins = [user.username];
-    this.setState({user, admins});
+    this.setState({user, admins}, () => {
+      console.log(this.state);
+    });
   }
 
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
   };
+
 
   wrapStyle = {
     marginTop: "5%"
@@ -63,6 +70,21 @@ class CreateChatroomForm extends React.Component {
     }
   }
 
+  handleSubmit = () => {
+    let {admins, users, name} = this.state,
+        payload = {admins, users, name};
+        console.log(payload);
+    axios.post('/chatrooms', payload).then(res => {
+      console.log(res)  
+    }).catch(err => {
+      if (err) throw err;
+    })
+  }
+
+  formValid = () => {
+    return this.state.name && this.state.users.length !== 0;
+  }
+
 
 
   render() {
@@ -73,7 +95,7 @@ class CreateChatroomForm extends React.Component {
         <NavBar {...this.props} />
         <form style={this.wrapStyle} className={classes.container} noValidate autoComplete="off">
           <Grid container spacing={24} alignItems="center" justify="center" direction="column">
-            <Grid item xs={3}>
+            <Grid item xs={3} alignItems="center" justify="center" direction="column">
               <TextField
                 id="standard-name"
                 label="chatroom name"
@@ -101,8 +123,6 @@ class CreateChatroomForm extends React.Component {
                 margin="normal"
                 variant="filled"
               />
-
-
               <TextField
                 id="standard-name"
                 label="add admin"
@@ -122,6 +142,7 @@ class CreateChatroomForm extends React.Component {
                 margin="normal"
                 variant="filled"
               />
+              <StandardButton formValid={this.formValid()} callback={this.handleSubmit} />
             </Grid>
           </Grid>
         </form>

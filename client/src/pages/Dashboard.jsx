@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import NavBar from './../components/NavBar';
 import { getUserData } from '../utilities/userData';
 import ChatList from './../components/ChatList';
+import axios from 'axios';
 
 const styles = theme => ({
   root: {
@@ -26,7 +27,13 @@ class Dashboard extends Component {
 
   componentWillMount(){
     let {user} = this.props;
-    this.setState({user});
+    this.setState({user}, () => {
+      axios.get('/users/login').then(res => {
+        console.log(res);
+      }).catch(err => {
+        if (err) throw err;
+      })
+    });
   }
 
   welcomeStyle = {

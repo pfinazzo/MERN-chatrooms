@@ -2,7 +2,6 @@ const User = require('./../models/User');
 
 
 function cookieCheck(req, res, next) {
-  console.log(req.cookies)
   if (req.cookies.user_sid && !req.session.user) {
     res.clearCookie('user_sid');
   }
@@ -12,29 +11,24 @@ function cookieCheck(req, res, next) {
 // middleware function to check for logged-in users
 function sessionCheck(req, res, next) {
   if (req.session.user && req.cookies.user_sid) {
-    res.redirect('/users/dashboard');
+    let {username, email} = req.session.user;
+    res.send({username, email});
   } else {
     next();
   }
 };
-
-// chats of current User route
-function index(req, res){
-  res.send(req.body);
-}
-
-
-function home(req, res) {
-  res.send('route to login');
-}
 
 
 // post route for user signup
 function signup(req, res) {
   User.create(req.body)
     .then(user => {
-      req.session.user = user.dataValues;
-      res.redirect('/users/dashboard');
+      console.log(user);
+      req.session.user = user;
+      let userData = {...req.session.user._doc};
+      delete userData.password;
+      console.log(userData);  
+      res.send(userData); 
     })
     .catch(error => {
       if (error) throw error;
@@ -53,7 +47,7 @@ function login(req, res) {
     username
   }).exec().then(function (user) {
     if (!user) {
-      res.send('login failed, no user found');
+      res.send('login failed');
     } else {
       user.comparePassword(password, (err, match) => {
         if (!match) {
@@ -75,23 +69,14 @@ function login(req, res) {
 
 
 // route for user's dashboard
-function dashboard(req, res) {
-  console.log(req.cookies.user_id);
-  if (req.session.user && req.cookies.user_sid) {
-    res.send('hit dashboard');
-  } else {
-    res.send('route to login page');
-  }
-};
 
 
 // route for user logout
 function logout(req, res) {
-  console.log('hit logout')
   if (req.session.user && req.cookies.user_sid) {
     res.clearCookie('user_sid');
     req.session.destroy();
-    res.redirect('/users');
+    res.end();
   } else {
     res.send('route to login page');
   }
@@ -102,10 +87,7 @@ function logout(req, res) {
 module.exports = {
   cookieCheck,
   sessionCheck,
-  home,
   login,
-  index,
   signup,
-  dashboard,
   logout
 }

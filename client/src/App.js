@@ -16,10 +16,8 @@ export default class App extends Component {
     this.setState({user})
   }
 
-  setUserData = (user) => {
-    this.setState({user}, () => {
-      console.log(this.state.user);
-    });
+  setUserData = (user, cb) => {
+    this.setState({user}, cb);
   }
 
   render(){
@@ -27,7 +25,7 @@ export default class App extends Component {
       <Router>
         <div>
         <Route exact path="/" render={(props) => this.state.user ? <Dashboard user={this.state.user} {...props}/> : <LoginPage  setUserData={this.setUserData} {...props}/>}/>
-        <Route path="/signup" render={(props) => <SignUpPage {...props}/>}/>
+        <Route path="/signup" render={(props) => <SignUpPage setUserData={this.setUserData} {...props}/>}/>
         <Route path="/login" render={(props) => <LoginPage setUserData={this.setUserData} {...props}/>}/>
         <Route exact path="/create" render={(props) => this.state.user ? <CreateChatroomForm user={this.state.user} {...props}/> : <LoginPage  setUserData={this.setUserData} {...props}/>}/>
       </div>

@@ -33,9 +33,9 @@ class NavBar extends Component {
 
   routeTo = (path) => {
     if (path === "/logout"){
+      console.log('hit');
       localStorage.clear();
       axios.get("/users/logout").then(res => {
-        console.log(res);
         this.setState({
           user: {
             username: null,
@@ -51,13 +51,9 @@ class NavBar extends Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     let user = getUserData();
-    if (user){
-      if (user.username !== this.state.user.username){
-        this.setState({user})
-      }
-    }
+    this.setState({user});
   }
 
 
@@ -70,16 +66,10 @@ class NavBar extends Component {
           <Button onClick={() => this.routeTo("/")} color="inherit">
             Home
           </Button>
-          <Button onClick={() => this.routeTo("/profile")} color="inherit">
-            Profile
-          </Button>
           <Button onClick={() => this.routeTo("/logout")} color="inherit">Logout</Button>
         </Toolbar>
     } else {
       nav = <Toolbar>
-        <Button onClick={() => this.routeTo("/")} color="inherit">
-          Home
-        </Button>
         <Button onClick={() => this.routeTo("/signup")} color="inherit">signup</Button>
         <Button onClick={() => this.routeTo("/login")} color="inherit">Login</Button>
       </Toolbar>
