@@ -1,15 +1,18 @@
 const express = require('express'),
       app = express(),
-      session = require('express-session');
+      session = require('express-session'),
+      cookieParser = require('cookie-parser');
 
-
+require('dotenv').config();
 app.use(express.urlencoded({extended: true}))
 app.use(express.json());
+app.use(cookieParser());
 app.use(session({
-  secret: "yolo", // change to env var later
+  key: 'user_sid',
+  secret: "covfefe", // change to env var later
   resave: false,
-  saveUninitialized: true,
-  cookie: {secure: "auto"}
+  saveUninitialized: false,
+  cookie: {expires: 6000000}
 }))
 
 app.use("/users", require('./routes/user'));

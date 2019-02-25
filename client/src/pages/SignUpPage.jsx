@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-import NavBar from './NavBar';
+import NavBar from '../components/NavBar';
 import axios from 'axios';
 
 const styles = theme => ({
@@ -54,11 +54,9 @@ class SignUpPage extends Component {
     this.state = {};
   }
 
-  handleChange = (e, name) => {
+  handleChange = (e, key  ) => {
     this.setState({
-      [name]: e.target.value
-    }, () => {
-      console.log(this.state);
+      [key  ]: e.target.value
     })
   }
   
@@ -70,7 +68,9 @@ class SignUpPage extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     axios.post("/users/signup", this.state).then(res => {
-      console.log(res.data);
+      if (res.statusText === "OK"){
+        this.props.history.push('/login');
+      }
     }).catch(err => {
       if (err) throw err;
     })

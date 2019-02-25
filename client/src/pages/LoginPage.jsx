@@ -12,8 +12,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-import NavBar from './NavBar';
+import NavBar from '../components/NavBar';
 import axios from 'axios';
+import {setUserData} from './../utilities/userData';
 
 const styles = theme => ({
   main: {
@@ -57,7 +58,15 @@ class LoginPage extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     axios.post("/users/login", this.state).then(res => {
-      console.log(res);
+      let {username, email, _id} = res.data;
+      if (username && email && _id){
+        let userData = {username, email, _id};
+        setUserData(JSON.stringify(userData));
+        this.props.setUserData(userData); // set state in app
+        if (res.statusText === "OK"){
+          this.props.history.push('/');
+        }
+      }
     }).catch(err => {
       if (err) throw err;
     })
@@ -66,8 +75,6 @@ class LoginPage extends Component {
   handleFormChange = (e, name) => {
     this.setState({
       [name]: e.target.value
-    }, () => {
-      console.log(this.state);
     })
   }
 

@@ -1,16 +1,20 @@
 const router = require('express').Router();
-const {postLogin, fake, logout, getLogin, signup} = require('./../controllers/user');
+const {cookieCheck, sessionCheck, home, login, signup, signupPage, loginPage, dashboard, logout, index} = require('./../controllers/user');
 require('./../config/connection');
 
-router.post("/login", postLogin);
+router.use(cookieCheck);
 
-router.get("/login", getLogin);
+router.get('/', sessionCheck, home);
 
-router.get("/fake", fake);
+router.post('/signup', sessionCheck, signup);
 
-router.get("/logout", logout);
+router.get('/chats', index);
 
-router.post("/signup", signup);
+router.post('/login', sessionCheck, login);
+
+router.get('/dashboard', dashboard);
+
+router.get('/logout', logout);
 
 
 module.exports = router;
