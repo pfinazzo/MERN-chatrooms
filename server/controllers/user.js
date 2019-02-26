@@ -11,7 +11,12 @@ function cookieCheck(req, res, next) {
 
 function getCurrentReceivedFriendRequests(req, res){
   let receiver = req.session.user._id;
-  FriendRequest.find({receiver}).then(receivedRequests => {
+  FriendRequest.find({receiver}).populate('sender').then(receivedRequests => {
+    receivedRequests = receivedRequests.map(request => {
+      let {sender} = request,
+          {username, _id} = sender; // remove user name from populated user
+          return {username, _id};
+    })
     res.send(receivedRequests);
   }).catch(err => {
     console.log(err);
@@ -20,7 +25,12 @@ function getCurrentReceivedFriendRequests(req, res){
 
 function getCurrentSentFriendRequests(req, res){
   let sender = req.session.user._id;
-  FriendRequest.find({ sender }).then(sentRequests => {
+  FriendRequest.find({ sender }).populate('receiver').then(sentRequests => {
+    sentRequests = sentRequests.map(request => {
+      let {receiver} = request,
+          {username, _id} = receiver; // remove user name from populated user
+          return {username, _id};
+    })
     res.send(sentRequests)
   }).catch(err => {
     if (err) throw err;
