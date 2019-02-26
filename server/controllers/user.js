@@ -61,7 +61,7 @@ function addFriend(req, res){
       sender: req.session.user._id,
       receiver: user._id
     }).then(result => {
-      console.log(result)
+      res.send(result)
     }).catch(err => {
       if (err) throw err;
     })

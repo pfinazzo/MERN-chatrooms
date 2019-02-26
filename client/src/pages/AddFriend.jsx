@@ -43,7 +43,9 @@ class AddFriend extends Component {
 
   handleSubmit = () => {
     axios.post('/users/add-friend', this.state).then(res => {
-      console.log(res)
+      if (res.statusText === "OK"){
+        this.props.history.push('/requests');
+      }
     }).catch(err => {
       if (err) throw err;
     })
