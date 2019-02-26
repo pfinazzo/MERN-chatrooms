@@ -67,6 +67,8 @@ class NavBar extends Component {
             Home
           </Button>
           <Button onClick={() => this.routeTo("/logout")} color="inherit">Logout</Button>
+          <Button onClick={() => this.routeTo("/add-friend")} color="inherit">Add Friend</Button>
+          <Button onClick={() => this.routeTo("/requests")} color="inherit">Requests</Button>
         </Toolbar>
     } else {
       nav = <Toolbar>

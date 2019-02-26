@@ -25,43 +25,39 @@ class Dashboard extends Component {
     this.state = {}
   }
 
-  componentWillMount(){
-    let {user} = this.props;
-    this.setState({user}, () => {
-      axios.get('/users/login').then(res => {
-        console.log(res);
-      }).catch(err => {
-        if (err) throw err;
-      })
-    });
+  componentWillMount() {
+    let { user } = this.props;
+    this.setState({ user }, () => {
+      // console.log(this.state.user)
+    })  
   }
 
-  welcomeStyle = {
-    textAlign: 'center'
-  }
+welcomeStyle = {
+  textAlign: 'center'
+}
 
-  goToCreateForm = () => {
-    this.props.history.push('/create');
-  }
+goToCreateForm = () => {
+  this.props.history.push('/create');
+}
 
-  render() {
-    const { classes } = this.props;
-    const { username } = this.state.user;
-    return (
-      <div className={classes.root}>
-        <NavBar {...classes} {...this.props} />
-        <Grid container spacing={24}>
-          <Grid item xs={12}>
-            <h1 style={this.welcomeStyle}>Welcome {username}</h1>
-          </Grid>
-          <Grid container item xs={6} direction="column-reverse" justify="center" alignItems="center">
-          <CreateButton callback={this.goToCreateForm} />
-            <ChatList />
-          </Grid>
+render() {
+  const { classes } = this.props;
+  const { username } = this.state.user;
+  return (
+    <div className={classes.root}>
+      <NavBar {...classes} {...this.props} />
+      <Grid container spacing={24}>
+        <Grid item xs={12}>
+          <h1 style={this.welcomeStyle}>Welcome {username}</h1>
         </Grid>
-      </div>
-    );
-  }
+        <Grid container item xs={6} direction="column-reverse" justify="center" alignItems="center">
+          <CreateButton callback={this.goToCreateForm} />
+          <ChatList />
+        </Grid>
+      </Grid>
+    </div>
+  );
+}
 }
 
 Dashboard.propTypes = {

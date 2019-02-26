@@ -1,4 +1,5 @@
-const User = require('./../models/User');
+const User = require('./../models/User'),
+      FriendRequest = require('./../models/FriendRequest');
 
 
 function cookieCheck(req, res, next) {
@@ -6,6 +7,32 @@ function cookieCheck(req, res, next) {
     res.clearCookie('user_sid');
   }
   next();
+}
+
+function getCurrentReceivedFriendRequests(req, res){
+  let receiver = req.session.user._id;
+  FriendRequest.find({receiver}).then(receivedRequests => {
+    res.send(receivedRequests);
+  }).catch(err => {
+    console.log(err);
+  })
+} 
+
+function getCurrentSentFriendRequests(req, res){
+  let sender = req.session.user._id;
+  FriendRequest.find({ sender }).then(sentRequests => {
+    res.send(sentRequests)
+  }).catch(err => {
+    if (err) throw err;
+  })
+}
+
+function acceptFriendRequest(req, res){
+  res.send('hit accept friend request', req.body.id)
+}
+
+function declineFriendRequest(){
+  res.send('hit decline friend request', req.body.id);
 }
 
 // middleware function to check for logged-in users
@@ -17,6 +44,19 @@ function sessionCheck(req, res, next) {
     next();
   }
 };
+
+function addFriend(req, res){
+  User.findOne(req.body).then(user=> {
+    FriendRequest.create({
+      sender: req.session.user._id,
+      receiver: user._id
+    }).then(result => {
+      console.log(result)
+    }).catch(err => {
+      if (err) throw err;
+    })
+  })
+}
 
 
 // post route for user signup
@@ -67,10 +107,6 @@ function login(req, res) {
   })
 };
 
-
-// route for user's dashboard
-
-
 // route for user logout
 function logout(req, res) {
   if (req.session.user && req.cookies.user_sid) {
@@ -87,6 +123,11 @@ function logout(req, res) {
 module.exports = {
   cookieCheck,
   sessionCheck,
+  getCurrentSentFriendRequests,
+  getCurrentReceivedFriendRequests,
+  acceptFriendRequest,
+  declineFriendRequest,
+  addFriend,
   login,
   signup,
   logout

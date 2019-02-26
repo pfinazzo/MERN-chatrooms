@@ -18,13 +18,15 @@ const wrapStyle = {
 
 class StandardButton extends Component{
 
-
+  formValid = () => {
+    return !this.props.formValid;
+  }
   render(){
-    let { classes, callback, formValid } = this.props;
+    let { classes, callback} = this.props;
     
   return (
     <div style={wrapStyle}>
-      <Button disabled={!formValid} onClick={callback} variant="contained" color="primary" className={classes.button}>
+      <Button disabled={this.formValid()} onClick={callback} variant="contained" color="primary" className={classes.button}>
         Submit
       </Button>
     </div>

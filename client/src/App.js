@@ -5,6 +5,8 @@ import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import CreateChatroomForm from './components/CreateChatroomForm';
 import {getUserData} from './utilities/userData';
+import AddFriend from './pages/AddFriend';
+import RequestsPage from './pages/RequestsPage';
 
 export default class App extends Component {
   state = {
@@ -28,6 +30,8 @@ export default class App extends Component {
         <Route path="/signup" render={(props) => <SignUpPage setUserData={this.setUserData} {...props}/>}/>
         <Route path="/login" render={(props) => <LoginPage setUserData={this.setUserData} {...props}/>}/>
         <Route exact path="/create" render={(props) => this.state.user ? <CreateChatroomForm user={this.state.user} {...props}/> : <LoginPage  setUserData={this.setUserData} {...props}/>}/>
+        <Route exact path="/add-friend" render={(props) => this.state.user ? <AddFriend user={this.state.user} {...props}/> : <LoginPage  setUserData={this.setUserData} {...props}/>}/>
+        <Route exact path="/requests" render={(props) => this.state.user ? <RequestsPage user={this.state.user} {...props}/> : <LoginPage  setUserData={this.setUserData} {...props}/>}/>
       </div>
       </Router>
     )

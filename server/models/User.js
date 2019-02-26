@@ -6,6 +6,7 @@ const UserSchema = new Schema({
   email: { type: String, required: true, index: { unique: true } },
   username: { type: String, required: true, index: { unique: true } },
   password: { type: String, required: true },
+  friends: [ this ],
   chatrooms: [{
     type: 'ObjectId',
     ref: "Chatroom"
