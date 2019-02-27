@@ -99,14 +99,13 @@ function declineFriendRequest(req, res){
 function addFriend(req, res){
   console.log(req.session.user);
   User.findOne(req.body).then(user=> {  
-    console.log(user);
     FriendRequest.create({
       sender: req.session.user._id,
       receiver: user._id
     }).then(result => {
       res.send(result)
     }).catch(err => {
-      if (err) throw err;
+      if (err) res.send('this request probably already exists, either you already sent them a request and its pending or they already sent you a request and you have not accepted it' );
     })
   })
 }

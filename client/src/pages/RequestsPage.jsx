@@ -66,7 +66,7 @@ export default class RequestsPage extends Component {
           if (request.username){
             return <Grid item xs="12"><FriendRequest reload={this.reload} _id={request._id} received={true} header={request.username} text="Accept user?" /></Grid>
           } else {
-            return null
+            return <Grid item xs="12"><FriendRequest header={"No friend requests received.. loser"} text="I'm just kidding, but yeah if someone adds you as a friend it will show up here  " /></Grid>
           }
         }) :
         <Grid item xs="12"><FriendRequest header={"No friend requests received.. loser"} text="I'm just kidding, but yeah if someone adds you as a friend it will show up here  " /></Grid>,
@@ -75,7 +75,6 @@ export default class RequestsPage extends Component {
         sentRequests.map(request => <Grid item xs="12"><FriendRequest reload={this.reload} _id={request._id} header={request.username} text="pending acceptance" /></Grid>) :
         <Grid item xs="12"><FriendRequest header={"No friend requests sent"} text="if you add a friend, your request will show up here until they accept or decline it" /></Grid>;
 
-        console.log(receivedRequests, sentRequests);
 
     if (!this.state.finished) {
       return (

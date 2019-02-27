@@ -24,15 +24,13 @@ class FriendRequest extends Component {
   handleDelete = (id) => {
     if (this.props.received) {
       axios.post('/friends/decline-friend-request', { id }).then(res => {
-        console.log(res);
+        if (res.status === 200) this.props.reload();
       }).catch(err => {
         if (err) throw err;
       })
     } else {
       axios.post('/friends/delete-friend-request', {id}).then(res => {
-        if (res.status === 200){
-          this.props.reload();
-        }
+        if (res.status === 200) this.props.reload();
       }).catch(err => {
         if(err) throw err;
       })
