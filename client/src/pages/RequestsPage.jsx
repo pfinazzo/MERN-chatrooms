@@ -14,11 +14,14 @@ export default class RequestsPage extends Component {
   }
 
   componentWillMount() {
-    axios.get('/users/received-friend-requests').then(res => {
-      console.log(res);
+    axios.get('/friends/received-friend-requests').then(res => {
+      if (res.data === "not good"){
+        localStorage.clear();
+        this.props.history.push('/login');
+      }
       let receivedRequests = res.data;
       this.setState({ receivedRequests }, () => {
-        axios.get('/users/sent-friend-requests').then(res => {
+        axios.get('/friends/sent-friend-requests').then(res => {
           let sentRequests = res.data;
           this.setState({ sentRequests }, () => {
             setTimeout(() => {
@@ -49,13 +52,14 @@ export default class RequestsPage extends Component {
     let { state, headerStyle, props } = this,
       { receivedRequests, sentRequests } = state,
       renderedReceived = receivedRequests.length ?
-        receivedRequests.map(request => <Grid item xs="12"><FriendRequest header={request.username} text="Accept user?" /></Grid>) :
+        receivedRequests.map(request => <Grid item xs="12"><FriendRequest _id={request._id} received={true} header={request.username} text="Accept user?" /></Grid>) :
         <Grid item xs="12"><FriendRequest header={"No friend requests received.. loser"} text="I'm just kidding, but yeah if someone adds you as a friend it will show up here  " /></Grid>,
 
       renderedSent = sentRequests.length ?
-        sentRequests.map(request => <Grid item xs="12"><FriendRequest header={request.username} text="pending acceptance" /></Grid>) :
+        sentRequests.map(request => <Grid item xs="12"><FriendRequest _id={request._id} header={request.username} text="pending acceptance" /></Grid>) :
         <Grid item xs="12"><FriendRequest header={"No friend requests sent"} text="if you add a friend, your request will show up here until they accept or decline it" /></Grid>;
 
+        console.log(receivedRequests, sentRequests);
 
     if (!this.state.finished) {
       return (

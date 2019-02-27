@@ -3,7 +3,8 @@ var express = require('express'),
       session = require('express-session'),
       cookieParser = require('cookie-parser'),
       {config} = require('dotenv'),
-      {urlencoded, json} = express;
+      {join} = require('path'),
+      {urlencoded, json, static} = express;
 
 require('./config/connection');
 config();
@@ -17,9 +18,11 @@ app.use(session({
   saveUninitialized: false,
   cookie: {expires: 6000000}
 }))
+app.use(static(join(__dirname, "./client/public/assets")));
 
 
 app.use('/users', require('./routes/user'));
+app.use('/friends', require('./routes/friendRequests'));
 app.use('/chatrooms', require('./routes/chatroom'));
 
 app.listen(3001);

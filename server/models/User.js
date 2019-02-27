@@ -6,12 +6,11 @@ const UserSchema = new Schema({
   email: { type: String, required: true, index: { unique: true } },
   username: { type: String, required: true, index: { unique: true } },
   password: { type: String, required: true },
-  friends: [ this ],
+  friends: [ this, {index: {unique: true}} ],
   chatrooms: [{
     type: 'ObjectId',
     ref: "Chatroom"
-  }],
-  // facebookId: {type: String, required: false}
+  }]
 })
 
 UserSchema.pre('save', function(next) {

@@ -1,13 +1,7 @@
 const router = require('express').Router();
-const {cookieCheck, sessionCheck, login, signup, logout, addFriend, getCurrentSentFriendRequests, getCurrentReceivedFriendRequests} = require('./../controllers/user');
+const {cookieCheck, sessionCheck, login, signup, logout} = require('./../controllers/user');
 
 router.use(cookieCheck);
-
-router.post('/add-friend', addFriend);
-
-router.get('/sent-friend-requests', getCurrentSentFriendRequests);
-
-router.get('/received-friend-requests', getCurrentReceivedFriendRequests);
 
 router.post('/signup', sessionCheck, signup);
 

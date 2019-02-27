@@ -42,13 +42,30 @@ class AddFriend extends Component {
   }
 
   handleSubmit = () => {
-    axios.post('/users/add-friend', this.state).then(res => {
-      if (res.statusText === "OK"){
-        this.props.history.push('/requests');
+    axios.get('/friends').then(res => {
+      if (res.data === "not good"){
+        console.log(res.statusText)
+        localStorage.clear();
+        this.props.history.push('/login');
       }
+      let friends = res.data;
+      this.setState({friends}, () => {
+        let usernames = this.state.friends.map(({username}) => username);
+        if(!usernames.includes(this.state.username)){
+          axios.post('/friends/add-friend', this.state).then(res => {
+            if (res.statusText === "OK"){
+              this.props.history.push('/requests');
+            }
+          }).catch(err => {
+            if (err) throw err;
+          })
+        } else {
+          alert('you already have this friend')
+        }
+      });
     }).catch(err => {
-      if (err) throw err;
-    })
+      if (err) throw err; 
+    })  
   }
 
   render() {

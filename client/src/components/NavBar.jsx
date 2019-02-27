@@ -5,7 +5,9 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
-import {getUserData} from './../utilities/userData';
+import { getUserData } from './../utilities/userData';
+import Grid from '@material-ui/core/Grid/Grid';
+import NewChatroomNavButton from './NewChatroomNavButton';
 
 const styles = {
   root: {
@@ -32,7 +34,7 @@ class NavBar extends Component {
   }
 
   routeTo = (path) => {
-    if (path === "/logout"){
+    if (path === "/logout") {
       console.log('hit');
       localStorage.clear();
       axios.get("/users/logout").then(res => {
@@ -53,23 +55,35 @@ class NavBar extends Component {
 
   componentWillMount() {
     let user = getUserData();
-    this.setState({user});
+    this.setState({ user });
   }
 
 
   render() {
-      // console.log(this.state);
     let nav;
-    if (this.state.user ) {
+    if (this.state.user) {
       nav =
         <Toolbar>
-          <Button onClick={() => this.routeTo("/")} color="inherit">
-            Home
-          </Button>
-          <Button onClick={() => this.routeTo("/logout")} color="inherit">Logout</Button>
-          <Button onClick={() => this.routeTo("/add-friend")} color="inherit">Add Friend</Button>
-          <Button onClick={() => this.routeTo("/requests")} color="inherit">Requests</Button>
-          <Button onClick={() => this.routeTo("/create")} color="inherit">Create Chatroom</Button>
+          <Grid container spacing={24}>
+            <Grid item xs={6}>
+              <Button onClick={() => this.routeTo("/")} color="inherit">Home</Button>
+              <Button onClick={() => this.routeTo("/logout")} color="inherit">Logout</Button>
+            </Grid>
+            <Grid container xs={6} justify="flex-end">
+              <Grid container justify="space-evenly" xs={3}>
+                <Button onClick={() => this.routeTo("/add-friend")} color="inherit">Add Friend</Button>
+              </Grid>
+              <Grid container justify="space-evenly" xs={3}>
+                <Button onClick={() => this.routeTo("/requests")} color="inherit">Requests</Button>
+              </Grid>
+              <Grid container justify="space-evenly" xs={3}>
+                <Button onClick={() => this.routeTo("/friends")} color="inherit">Friends</Button>
+              </Grid>
+              <Grid container justify="space-evenly" xs={1}>
+                <Button onClick={() => this.routeTo("/create")} color="inherit"><NewChatroomNavButton/></Button>
+              </Grid>
+            </Grid>
+          </Grid>
         </Toolbar>
     } else {
       nav = <Toolbar>

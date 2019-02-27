@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid/Grid';
 import TextField from '@material-ui/core/TextField';
-import NavBar from './NavBar';
-import CreateButton from './CreateButton';
-import StandardButton from './StandardButton';
+import NavBar from '../components/NavBar';
+import CreateButton from '../components/CreateButton';
+import StandardButton from '../components/StandardButton';
 import axios from 'axios';
 
 const styles = theme => ({

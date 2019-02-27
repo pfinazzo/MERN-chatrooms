@@ -13,6 +13,6 @@ const FriendRequestSchema = new Schema({
   }
 })
 
-FriendRequestSchema.index({sender: 1, receiver: 1}, {unique: true});
+FriendRequestSchema.index({sender: 1, receiver: 1}, {unique: true});{}
 
 module.exports = model("FriendRequest", FriendRequestSchema);

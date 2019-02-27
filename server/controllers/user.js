@@ -1,6 +1,4 @@
-const User = require('./../models/User'),
-      FriendRequest = require('./../models/FriendRequest');
-
+const User = require('./../models/User');
 
 function cookieCheck(req, res, next) {
   if (req.cookies.user_sid && !req.session.user) {
@@ -9,41 +7,6 @@ function cookieCheck(req, res, next) {
   next();
 }
 
-function getCurrentReceivedFriendRequests(req, res){
-  let receiver = req.session.user._id;
-  FriendRequest.find({receiver}).populate('sender').then(receivedRequests => {
-    receivedRequests = receivedRequests.map(request => {
-      let {sender} = request,
-          {username, _id} = sender; // remove user name from populated user
-          return {username, _id};
-    })
-    res.send(receivedRequests);
-  }).catch(err => {
-    console.log(err);
-  })
-} 
-
-function getCurrentSentFriendRequests(req, res){
-  let sender = req.session.user._id;
-  FriendRequest.find({ sender }).populate('receiver').then(sentRequests => {
-    sentRequests = sentRequests.map(request => {
-      let {receiver} = request,
-          {username, _id} = receiver; // remove user name from populated user
-          return {username, _id};
-    })
-    res.send(sentRequests)
-  }).catch(err => {
-    if (err) throw err;
-  })
-}
-
-function acceptFriendRequest(req, res){
-  res.send('hit accept friend request', req.body.id)
-}
-
-function declineFriendRequest(){
-  res.send('hit decline friend request', req.body.id);
-}
 
 // middleware function to check for logged-in users
 function sessionCheck(req, res, next) {
@@ -54,20 +17,6 @@ function sessionCheck(req, res, next) {
     next();
   }
 };
-
-function addFriend(req, res){
-  User.findOne(req.body).then(user=> {
-    FriendRequest.create({
-      sender: req.session.user._id,
-      receiver: user._id
-    }).then(result => {
-      res.send(result)
-    }).catch(err => {
-      if (err) throw err;
-    })
-  })
-}
-
 
 // post route for user signup
 function signup(req, res) {
@@ -133,11 +82,6 @@ function logout(req, res) {
 module.exports = {
   cookieCheck,
   sessionCheck,
-  getCurrentSentFriendRequests,
-  getCurrentReceivedFriendRequests,
-  acceptFriendRequest,
-  declineFriendRequest,
-  addFriend,
   login,
   signup,
   logout
