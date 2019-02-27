@@ -22,7 +22,6 @@ const styles = theme => ({
 class FriendRequest extends Component {
 
   handleDelete = (id) => {
-    console.log(this.props.received);
     if (this.props.received) {
       axios.post('/friends/decline-friend-request', { id }).then(res => {
         console.log(res);
@@ -30,7 +29,13 @@ class FriendRequest extends Component {
         if (err) throw err;
       })
     } else {
-      axios.post('/user/')
+      axios.post('/friends/delete-friend-request', {id}).then(res => {
+        if (res.status === 200){
+          this.props.reload();
+        }
+      }).catch(err => {
+        if(err) throw err;
+      })
     }
   }
 

@@ -13,7 +13,8 @@ export default class RequestsPage extends Component {
     finished: false
   }
 
-  componentWillMount() {
+  fetchData = () =>{
+    console.log('hit fetch data function  ')
     axios.get('/friends/received-friend-requests').then(res => {
       if (res.data === "not good"){
         localStorage.clear();
@@ -39,6 +40,15 @@ export default class RequestsPage extends Component {
     })
   }
 
+  componentWillMount() {
+    this.fetchData();
+  }
+
+  reload = () => {
+    console.log('hit reload function')
+    this.fetchData();
+  }
+
   headerStyle = {
     width: "100%",
     textAlign: "center"
@@ -52,11 +62,17 @@ export default class RequestsPage extends Component {
     let { state, headerStyle, props } = this,
       { receivedRequests, sentRequests } = state,
       renderedReceived = receivedRequests.length ?
-        receivedRequests.map(request => <Grid item xs="12"><FriendRequest _id={request._id} received={true} header={request.username} text="Accept user?" /></Grid>) :
+        receivedRequests.map(request => {
+          if (request.username){
+            return <Grid item xs="12"><FriendRequest reload={this.reload} _id={request._id} received={true} header={request.username} text="Accept user?" /></Grid>
+          } else {
+            return null
+          }
+        }) :
         <Grid item xs="12"><FriendRequest header={"No friend requests received.. loser"} text="I'm just kidding, but yeah if someone adds you as a friend it will show up here  " /></Grid>,
 
       renderedSent = sentRequests.length ?
-        sentRequests.map(request => <Grid item xs="12"><FriendRequest _id={request._id} header={request.username} text="pending acceptance" /></Grid>) :
+        sentRequests.map(request => <Grid item xs="12"><FriendRequest reload={this.reload} _id={request._id} header={request.username} text="pending acceptance" /></Grid>) :
         <Grid item xs="12"><FriendRequest header={"No friend requests sent"} text="if you add a friend, your request will show up here until they accept or decline it" /></Grid>;
 
         console.log(receivedRequests, sentRequests);

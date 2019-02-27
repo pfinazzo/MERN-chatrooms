@@ -10,9 +10,13 @@ const FriendRequestSchema = new Schema({
     type: 'ObjectId',
     ref: 'User', 
     unique: true
+  },
+  declined: {
+    type: Boolean, 
+    default: false
   }
 })
 
-FriendRequestSchema.index({sender: 1, receiver: 1}, {unique: true});{}
+FriendRequestSchema.index({sender: 1, receiver: 1}, {unique: true});
 
 module.exports = model("FriendRequest", FriendRequestSchema);

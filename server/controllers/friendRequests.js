@@ -6,10 +6,14 @@ function getCurrentReceivedFriendRequests(req, res){
     let receiver = req.session.user._id;
     FriendRequest.find({receiver}).populate('sender').then(receivedRequests => {
       receivedRequests = receivedRequests.map(request => {
+        if (!request.declined){
         let {sender} = request,
             {username} = sender,
             {_id} = request; 
-            return {username, _id};
+            return {username, _id};         
+        } else {
+          return {username: null, _id: null}   
+        }
       })
       res.send(receivedRequests);
     }).catch(err => {
@@ -37,7 +41,12 @@ function getCurrentSentFriendRequests(req, res){
 }
 
 function deleteFriendRequest(req, res){
-  
+  let {id} = req.body;
+  FriendRequest.findByIdAndDelete(id).then(result => {
+    res.send(result);
+  }).catch(err => {
+    if (err) throw err;
+  })
 }
 
 function acceptFriendRequest(req, res){
@@ -64,6 +73,7 @@ function getCurrentUserFriends(req, res){
   if (req.session.user){
     let {_id} = req.session.user;
     User.findById(_id).populate('friends').then(result => {
+      console.log(result);
       let usernames = [];
       result._doc.friends.forEach(friend => {
         usernames.push({username: friend.username});
@@ -79,14 +89,17 @@ function getCurrentUserFriends(req, res){
 
 function declineFriendRequest(req, res){
   let {id} = req.body;
-  console.log(id);
-  FriendRequest.findByIdAndDelete(id, result => {
-    res.send(result);
+  FriendRequest.findByIdAndUpdate(id, {$set: {declined: true} }, {new: true}).then(result => {
+    res.send(result)
+  }).catch(err => {
+    if (err) throw err;
   })
 }
 
 function addFriend(req, res){
-  User.findOne(req.body).then(user=> {
+  console.log(req.session.user);
+  User.findOne(req.body).then(user=> {  
+    console.log(user);
     FriendRequest.create({
       sender: req.session.user._id,
       receiver: user._id
