@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -8,6 +8,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 import Friend from './Friend';
+import axios from 'axios';
 
 const styles = theme => ({
   root: {
@@ -20,15 +21,28 @@ const styles = theme => ({
     display: 'inline',
   },
 });
+ 
 
-function FriendList(props) {
-  const { classes, friends } = props;
-        // {username} = user;
-  return (
-    <List className={classes.root}>
-      {friends.map(friend => <Friend name={friend.username}/>)}
-    </List>
-  );
+class FriendList extends Component {
+  
+  handleDelete = (username) => {
+    axios.post('/friends/unfriend', { username }).then(res => {
+      if (res.status === 200) {
+        this.props.fetchData();
+      }
+    }).catch(err => {
+      if (err) throw err;
+    })
+  }
+  render() {
+    const { classes, friends } = this.props;
+    // {username} = user;
+    return (
+      <List className={classes.root}>
+        {friends.map(friend => <Friend handleDelete={this.handleDelete} id={friend._id} name={friend.username} />)}
+      </List>
+    );
+  }
 }
 
 FriendList.propTypes = {

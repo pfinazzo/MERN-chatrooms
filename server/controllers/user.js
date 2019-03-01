@@ -38,10 +38,12 @@ function signup(req, res) {
 
 // post route for user Login
 function login(req, res) {
+  console.log('hit');
   let {
     username,
     password
   } = req.body;
+  if (username && password){
   User.findOne({
     username
   }).exec().then(function (user) {
@@ -63,7 +65,10 @@ function login(req, res) {
     }
   }).catch(err => {
     if (err) throw err;
-  })
+  })     
+} else {
+  res.send('missing username or password');
+}
 };
 
 // route for user logout

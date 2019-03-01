@@ -65,6 +65,8 @@ class LoginPage extends Component {
         this.props.setUserData(res.data, () => {
           this.props.history.push('/');
         });
+      } else {
+        console.log(res);
       }
     }).catch(err => {
       if (err) throw err;

@@ -7,6 +7,7 @@ const router = require('express').Router(),
         declineFriendRequest,
         getCurrentUserFriends,
         addFriend,
+        unfriend
       } = require('./../controllers/friendRequests');
 
 router.get('/', getCurrentUserFriends);
@@ -17,6 +18,7 @@ router.get('/sent-friend-requests', getCurrentSentFriendRequests);
 
 router.put('/accept-friend-request', acceptFriendRequest);
 
+router.post('/unfriend',  unfriend);
 router.post('/delete-friend-request', deleteFriendRequest);
 
 router.post('/decline-friend-request', declineFriendRequest);
