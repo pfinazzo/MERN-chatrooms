@@ -124,7 +124,7 @@ function declineFriendRequest(req, res) {
       declined: true
     }
   }, {
-    new: true
+    news: true
   }).then(result => {
     res.send(result)
   }).catch(err => {
@@ -133,33 +133,16 @@ function declineFriendRequest(req, res) {
 }
 
 function unfriend(req, res) {
-  let {
-    username
-  } = req.body, {
-      _id
-    } = req.session.user,
-    friendId;
+  let {username} = req.body, 
+  {_id} = req.session.user,
+  friendId;
   console.log(username, _id);
-  User.findOneAndUpdate({
-    username
-  }, {
-    $pullAll: {
-      friends: [_id]
-    }
-  }, {
-    new: true
-  }).then(friend => {
-    console.log(friend);
+  User.findOneAndUpdate({username}, { $pullAll: { friends: [_id] }}, { new: true }).then(friend => {
+    console.log('friend id', friend._id);
     friendId = friend._doc._id;
   }).then(() => {
     console.log(friendId)
-    User.findByIdAndUpdate(_id, {
-      $pullAll: {
-        friends: [friendId]
-      }
-    }, {
-      new: true
-    }).then(user => {
+    User.findByIdAndUpdate(_id, { $pullAll: { friends: [friendId] } }, { new: true  }).then(user => {
       console.log(user);
       res.send(user);
     }).catch(err => {
@@ -182,7 +165,7 @@ function addFriend(req, res) {
       })
     })
   } else {
-    res.send('cannot add yourself as a friend')
+    res.send('cannot add yourself as a')
   }
 }
 
@@ -196,3 +179,11 @@ module.exports = {
   declineFriendRequest,
   addFriend,
 }
+  
+
+
+
+
+
+
+

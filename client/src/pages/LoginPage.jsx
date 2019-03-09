@@ -58,6 +58,7 @@ class LoginPage extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     axios.post("/users/login", this.state).then(res => {
+      console.log(res);
       let {username, email, _id} = res.data;
       if (username && email && _id){
         let userData = {username, email, _id};

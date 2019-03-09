@@ -54,11 +54,9 @@ function login(req, res) {
         if (!match) {
           res.send('incorrect password');
         } else {
-          console.log('hit');
-          req.session.user = user
-          let userData = {...req.session.user._doc};
-          delete userData.password;
-          console.log(userData);
+          req.session.user = user;
+          let {username, email, chatrooms, friends, _id} = user;
+          let userData =  {username, email, chatrooms, friends, _id};
           res.send(userData);
         }
       })
