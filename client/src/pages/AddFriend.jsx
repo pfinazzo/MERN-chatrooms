@@ -28,7 +28,7 @@ class AddFriend extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: {username: ''}
+      user: { username: '' }
     }
   }
 
@@ -37,26 +37,21 @@ class AddFriend extends Component {
   }
 
   handleChange = (key, e) => {
-    this.setState({
-      [key]: {username: e.target.value}
-    }, () => {
-      console.log(this.state);
-    })
+    this.setState({ [key]: { username: e.target.value } });
   }
 
   handleSubmit = () => {
     axios.get('/friends').then(res => {
-      if (res.data === "not good"){
-        console.log(res.statusText)
+      if (res.data === "not good") {
         localStorage.clear();
         this.props.history.push('/login');
       }
       let friends = res.data;
-      this.setState({friends}, () => {
-        let usernames = this.state.friends.map(({username}) => username);
-        if(!usernames.includes(this.state.user.username)){
+      this.setState({ friends }, () => {
+        let usernames = this.state.friends.map(({ username }) => username);
+        if (!usernames.includes(this.state.user.username)) {
           axios.post('/friends/add-friend', this.state.user).then(res => {
-            if (res.statusText === "OK"){
+            if (res.statusText === "OK") {
               this.props.history.push('/requests');
             }
           }).catch(err => {
@@ -67,12 +62,12 @@ class AddFriend extends Component {
         }
       });
     }).catch(err => {
-      if (err) throw err; 
-    })  
+      if (err) throw err;
+    })
   }
 
   render() {
-    const {classes} = this.props;
+    const { classes } = this.props;
     return (
       <div>
         <NavBar {...this.props} />
@@ -86,7 +81,7 @@ class AddFriend extends Component {
                 value={this.state.name}
                 onChange={(e) => this.handleChange('user', e)}
                 margin="normal"
-              />            
+              />
               <StandardButton formValid={this.formValid()} callback={this.handleSubmit} />
             </Grid>
           </Grid>

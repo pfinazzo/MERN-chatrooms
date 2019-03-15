@@ -37,4 +37,10 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
   })
 };
 
+UserSchema.methods.toJSON = function() {
+  var obj = this.toObject();
+  delete obj.password;
+  return obj;
+ }
+
 module.exports = model("User", UserSchema);

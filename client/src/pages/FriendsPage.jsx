@@ -15,12 +15,10 @@ export default class FriendsPage extends Component{
 
   fetchData = () => {
     axios.get('/friends').then(res => {
+      console.log(res);
       if (res.data === "not good"){
-        console.log(res.statusText)
-        localStorage.clear();
         this.props.history.push('/login');
       }
-      console.log(res);
       let friends = res.data;
       this.setState({friends});
     }).catch(err => {

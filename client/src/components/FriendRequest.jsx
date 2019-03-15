@@ -41,9 +41,7 @@ class FriendRequest extends Component {
     axios.put('/friends/accept-friend-request', { id }).then(res => {
       if (res.data === "success"){
         window.location.reload(); // janky fix 
-      } else {
-        console.log("nay")
-      }
+      } 
     }).catch(err => {
       if (err) throw err;
     })
@@ -52,7 +50,6 @@ class FriendRequest extends Component {
   render() {
     const { handleAdd, handleDelete, props } = this,
       { classes, header, text, _id, received } = props;
-    console.log(_id);
     let deleteButton;
     if (header === "No friend requests sent" || header === "No friend requests received.. loser") {
       deleteButton = null

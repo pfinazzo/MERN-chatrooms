@@ -10,12 +10,11 @@ function getCurrentReceivedFriendRequests(req, res) {
       receivedRequests = receivedRequests.map(request => {
         if (!request.declined) {
           let {
-            sender
+            sender,
+            _id
           } = request, {
             username
-          } = sender, {
-            _id
-          } = request;
+          } = sender;
           return {
             username,
             _id
@@ -85,8 +84,7 @@ function acceptFriendRequest(req, res) {
     if (err) throw err;
   }).finally(() => {
     FriendRequest.findByIdAndRemove(id).then(result => {
-      console.log(result);
-      res.send("success");
+      res.send("successfully added friend!");
     }).catch(err => {
       if (err) throw err;
     })
@@ -99,13 +97,10 @@ function getCurrentUserFriends(req, res) {
       _id
     } = req.session.user;
     User.findById(_id).populate('friends').then(result => {
-      console.log(result);
       let usernames = [];
-      result._doc.friends.forEach(friend => {
-        usernames.push({
-          username: friend.username
-        });
-      })
+      result.friends.forEach(({username}) => {
+        usernames.push({username});
+      });
       res.json(usernames);
     }).catch(err => {
       if (err) throw err;
@@ -124,7 +119,7 @@ function declineFriendRequest(req, res) {
       declined: true
     }
   }, {
-    news: true
+    new: true
   }).then(result => {
     res.send(result)
   }).catch(err => {
@@ -136,15 +131,20 @@ function unfriend(req, res) {
   let {username} = req.body, 
   {_id} = req.session.user,
   friendId;
-  console.log(username, _id);
-  User.findOneAndUpdate({username}, { $pullAll: { friends: [_id] }}, { new: true }).then(friend => {
-    console.log('friend id', friend._id);
-    friendId = friend._doc._id;
+  console.log(username, _id)
+  // username = friends username
+  // _id = current logged in user
+  User.findOne({username}).then(friend => {
+    console.log('friend', friend._id);
+    console.log('friend.friends', friend);
+    friendId = friend._id.toString();
+    console.log("_id and friend Id", _id, friendId);
   }).then(() => {
-    console.log(friendId)
-    User.findByIdAndUpdate(_id, { $pullAll: { friends: [friendId] } }, { new: true  }).then(user => {
-      console.log(user);
-      res.send(user);
+    console.log("friendId", friendId)
+    User.findByIdAndUpdate(_id, { $pull: { friends:  {$in: [friendId]} } }, { new: true  }).then(user => {
+      console.log("current user", user);
+      console.log("current user friends", user.friends);
+      res.end();
     }).catch(err => {
       if (err) throw err;
     })

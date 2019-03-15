@@ -4,9 +4,8 @@ import { withStyles } from '@material-ui/core/styles';
 import CreateButton from '../components/CreateButton';
 import Grid from '@material-ui/core/Grid';
 import NavBar from './../components/NavBar';
-import { getUserData } from '../utilities/userData';
 import ChatList from './../components/ChatList';
-import axios from 'axios';
+import LoadingSign from './../components/LoadingSign';
 
 const styles = theme => ({
   root: {
@@ -26,42 +25,51 @@ class Dashboard extends Component {
   }
 
   componentWillMount() {
-    let { user } = this.props;
-    this.setState({ user }, () => {
-      // console.log(this.state.user)
-    })  
+    let {user} = this.props;
+    this.setState({user});
   }
 
-welcomeStyle = {
-  textAlign: 'center'
-}
+  welcomeStyle = {
+    textAlign: 'center'
+  }
 
-goToCreateForm = () => {
-  this.props.history.push('/create');
-}
+  routeTo = (path) => {
+    this.props.history.push(path);
+  }
 
-render() {
-  const { classes } = this.props;
-  const { username } = this.state.user;
-  return (
-    <div className={classes.root}>
-      <NavBar {...classes} {...this.props} />
-      <Grid container spacing={24}>
+  render() {
+    const { classes } = this.props;
+    if (!this.props.user) {
+      return (<Grid container spacing={24} justify="center" alignContent="center" alignItems="center">
         <Grid item xs={12}>
-          <h1 style={this.welcomeStyle}>Welcome {username}</h1>
+          <div style={this.wrapStyle}>
+            <h1 style={this.welcomeStyle}>loading...</h1>
+            <LoadingSign />
+          </div>
         </Grid>
-        <Grid container item xs={6} direction="column-reverse" justify="center" alignItems="center">
-          <CreateButton callback={this.goToCreateForm} />
-          <ChatList />
-        </Grid>
-      </Grid>
-    </div>
-  );
-}
+      </Grid>)
+    } else {
+      let {username} = this.props.user;
+      return (
+        <div className={classes.root}>
+          <NavBar {...classes} {...this.props} />
+          <Grid container spacing={24}>
+            <Grid item xs={12}>
+              <h1 style={this.welcomeStyle}>Welcome {username}</h1>
+            </Grid>
+            <Grid container item xs={6} direction="column-reverse" justify="center" alignItems="center">
+              <CreateButton callback={() => this.routeTo('/create')} />
+              <ChatList />
+            </Grid>
+          </Grid>
+        </div>
+      );
+    }
+  }
 }
 
-Dashboard.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+  Dashboard.propTypes = {
+    classes: PropTypes.object.isRequired,
+  };
 
-export default withStyles(styles)(Dashboard);
+  export default withStyles(styles)(Dashboard);

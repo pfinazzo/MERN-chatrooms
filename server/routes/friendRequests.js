@@ -19,6 +19,7 @@ router.get('/sent-friend-requests', getCurrentSentFriendRequests);
 router.put('/accept-friend-request', acceptFriendRequest);
 
 router.post('/unfriend',  unfriend);
+
 router.post('/delete-friend-request', deleteFriendRequest);
 
 router.post('/decline-friend-request', declineFriendRequest);

@@ -42,9 +42,7 @@ class CreateChatroomForm extends React.Component {
     let {user} = this.props;
     // default user to admin
     let admins = [user.username];
-    this.setState({user, admins}, () => {
-      console.log(this.state);
-    });
+    this.setState({user, admins});
   }
 
   handleChange = name => event => {
@@ -64,8 +62,6 @@ class CreateChatroomForm extends React.Component {
       this.setState({
         [array]: users,
         [key]: ''
-      }, () => {
-        console.log(this.state);
       });
     }
   }
@@ -73,9 +69,8 @@ class CreateChatroomForm extends React.Component {
   handleSubmit = () => {
     let {admins, users, name} = this.state,
         payload = {admins, users, name};
-        console.log(payload);
     axios.post('/chatrooms', payload).then(res => {
-      console.log(res)  
+      console.log(res); 
     }).catch(err => {
       if (err) throw err;
     })

@@ -5,9 +5,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
-import { getUserData } from './../utilities/userData';
 import Grid from '@material-ui/core/Grid/Grid';
-import NewChatroomNavButton from './NewChatroomNavButton';
+import NewChatroomNavButton from './NavButton';
 
 const styles = {
   root: {
@@ -35,7 +34,6 @@ class NavBar extends Component {
 
   routeTo = (path) => {
     if (path === "/logout") {
-      console.log('hit');
       localStorage.clear();
       axios.get("/users/logout").then(res => {
         this.setState({
@@ -54,8 +52,12 @@ class NavBar extends Component {
   }
 
   componentWillMount() {
-    let user = getUserData();
-    this.setState({ user });
+    let {user} = this.props;
+    if (user){
+      this.setState({user});
+    } else {
+      this.setState({user: null});
+    }
   }
 
 
