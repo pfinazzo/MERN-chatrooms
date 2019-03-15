@@ -150,10 +150,7 @@ function unfriend(req, res) {
       friend.friends = friend.friends.filter(friendFriend => friendFriend.toString() !== user._id.toString());
       user.save();
       friend.save();
-      res.send({
-        userfriends: user.toObject().friends,
-        friendfriends: friend.toObject().friends
-      })
+      res.end();
     })
   })
 
