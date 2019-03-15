@@ -139,7 +139,6 @@ function unfriend(req, res) {
       _id
     } = req.session.user,
     friendId;
-  console.log(username, _id);
   User.findOneAndUpdate({
     username
   }, {
@@ -149,10 +148,8 @@ function unfriend(req, res) {
   }, {
     new: true
   }).then(friend => {
-    console.log(friend);
     friendId = friend._doc._id;
   }).then(() => {
-    console.log(friendId)
     User.findByIdAndUpdate(_id, {
       $pullAll: {
         friends: [friendId]
@@ -160,7 +157,6 @@ function unfriend(req, res) {
     }, {
       new: true
     }).then(user => {
-      console.log(user);
       res.send(user);
     }).catch(err => {
       if (err) throw err;
