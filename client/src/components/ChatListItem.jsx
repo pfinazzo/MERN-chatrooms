@@ -13,6 +13,14 @@ let latestMessageStyle = {
   width: '30%'
 }
 
+let wrapperStyle = {
+  width: "100%",
+  borderTop: "solid grey 1px",
+  borderBottom: "solid grey 1px",
+  marginTop: "-1px",
+  height: "80px "
+}
+
 
 function ChatListItem(props) {
   const { classes, chatroomName, userNames, latestMessage } = props,
@@ -21,26 +29,28 @@ function ChatListItem(props) {
 
 
   return (
-    <ListItem alignItems="flex-start">
-      {/* will use avatar later when user can upload photo file, probably with gridfs */}
-      {/* <ListItemAvatar>
+    <div style={wrapperStyle}>
+      <ListItem alignItems="flex-start">
+        {/* will use avatar later when user can upload photo file, probably with gridfs */}
+        {/* <ListItemAvatar>
             <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
           </ListItemAvatar> */}
-      <ListItemText
-        primary={chatroomName}
-        secondary={
-          <>
-            <Typography component="span" className={classes.inline} color="textPrimary">
-              {userListString}
-            </Typography>
-            <div style={latestMessageStyle}>
-              {`from: ${from}`}
-              {` - ${text}`}
-            </div>
-          </>
-        }
-      />
-    </ListItem>
+        <ListItemText
+          primary={chatroomName}
+          secondary={
+            <>
+              <Typography component="span" className={classes.inline} color="textPrimary">
+                {userListString}
+              </Typography>
+              <div style={latestMessageStyle}>
+                {`from: ${from}`}
+                {` - ${text}`}
+              </div>
+            </>
+          }
+        />
+      </ListItem>
+    </div>
   )
 }
 

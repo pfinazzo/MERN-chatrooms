@@ -9,8 +9,14 @@ import ChatListItem from './ChatListItem';
 const styles = theme => ({
   root: {
     width: '100%',
-    maxWidth: 360,
+    maxWidth: 400,
     backgroundColor: theme.palette.background.paper,
+    margin: "0px 0px",
+    textAlign: "center",
+    display: "inline-block",
+    padding: "0px",
+    height: "80%",
+    overflow: "scroll"
   },
   inline: {
     display: 'inline',
