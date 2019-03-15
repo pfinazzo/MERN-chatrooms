@@ -101,11 +101,14 @@ function getCurrentUserFriends(req, res) {
     User.findById(_id).populate('friends').then(result => {
       console.log(result);
       let usernames = [];
-      result._doc.friends.forEach(friend => {
+      result._doc.friends.forEach(({
+        username
+      }) => {
         usernames.push({
-          username: friend.username
+          username
         });
       })
+      console.log(usernames);
       res.json(usernames);
     }).catch(err => {
       if (err) throw err;
@@ -136,30 +139,21 @@ function unfriend(req, res) {
   let {
     username
   } = req.body, {
-      _id
-    } = req.session.user,
-    friendId;
-  User.findOneAndUpdate({
-    username
-  }, {
-    $pullAll: {
-      friends: [_id]
-    }
-  }, {
-    new: true
-  }).then(friend => {
-    friendId = friend._doc._id;
-  }).then(() => {
-    User.findByIdAndUpdate(_id, {
-      $pullAll: {
-        friends: [friendId]
-      }
-    }, {
-      new: true
-    }).then(user => {
-      res.send(user);
-    }).catch(err => {
-      if (err) throw err;
+    _id
+  } = req.session.user;
+
+  User.findById(_id).then(user => {
+    User.findOne({
+      username
+    }).then(friend => {
+      user.friends = user.friends.filter(userFriend => userFriend.toString() !== friend._id.toString());
+      friend.friends = friend.friends.filter(friendFriend => friendFriend.toString() !== user._id.toString());
+      user.save();
+      friend.save();
+      res.send({
+        userfriends: user.toObject().friends,
+        friendfriends: friend.toObject().friends
+      })
     })
   })
 
