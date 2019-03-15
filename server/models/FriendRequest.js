@@ -2,12 +2,12 @@ const {Schema, model} = require('mongoose');
 
 const FriendRequestSchema = new Schema({
   sender: {
-    type: 'ObjectId',
+    type: Schema.ObjectId,
     ref: 'User',
     unique: true
   },
   receiver: {
-    type: 'ObjectId',
+    type: Schema.ObjectId,
     ref: 'User', 
     unique: true
   },

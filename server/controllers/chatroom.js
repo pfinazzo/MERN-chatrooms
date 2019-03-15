@@ -15,44 +15,44 @@ function getUserIdFromUsername(username) {
   })
 }
 
+function fillUsers(users, cb){
+  let userIds = [];
+  users.forEach(username => {
+    User.findOne({username}).then(user => {
+      console.log(user);
+      userIds.push(user._id);
+      cb(userIds);
+    })
+  })
+}
+
 function create(req, res) {
   let {
     users,
     admins,
     name
-  } = req.body,
-    userIds = [],
-    adminIds = [];
+  } = req.body;
+  console.log(req.body);
+  var userIds = null,
+      adminIds = null;
 
-    const someFunction = (myArray) => {
-      const promises = myArray.map(async (myValue) => {
-        let _id = await getUserIdFromUsername();
-        userIds.push(_id)
-      });
-      return Promise.all(promises);
-    }
-
-    console.log(someFunction(users));
-    admins.forEach(username => {
-      getUserIdFromUsername(username, (id) => {
-        adminIds.push(id);
-      });
+  fillUsers(users, users => {
+    userIds = users;
+    fillUsers(admins, admins => {
+      adminIds = admins;
+      let payload = {
+        name, admins, users
+      };
+      Chatroom.create(payload).then(chatroom => {
+        console.log(chatroom);
+      }).catch(err => {
+        if (err) throw err;
+      })
     })
+  });
 
-    let payload = {
-      name,
-      users: userIds,
-      admins: adminIds
-    }
 
-    console.log(payload);
 
-    // let users = User.find()
-    Chatroom.create(payload).then(result => {
-      res.send(result);
-    }).catch(err => {
-      if (err) throw err;
-    })
 
 }
 

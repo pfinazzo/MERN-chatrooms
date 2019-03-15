@@ -2,13 +2,17 @@ const {Schema, model} = require('mongoose');
 
 const ChatroomSchema = new Schema({
   name: String,
-  users: [{
-    type: 'ObjectId',
+  admins: [{
+    type: Schema.ObjectId,
     ref: 'User'
   }],
-  admins: [{
-    type: 'ObjectId',
+  users: [{
+    type: Schema.ObjectId,
     ref: 'User'
+  }],
+  messages: [{
+    type: Schema.ObjectId,
+    ref: 'Message', 
   }]
 
   // password: String later possibility for extra security, will need admin to set
