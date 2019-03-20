@@ -14,7 +14,6 @@ import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
-import {setUserData} from './../utilities/userData';
 
 const styles = theme => ({
   main: {
@@ -69,11 +68,12 @@ class SignUpPage extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     axios.post("/users/signup", this.state).then(res => {
+      let {data} = res;
+      console.log(data);
       if (res.statusText === "OK"){
-        setUserData(JSON.stringify(res.data));
-        this.props.setUserData(res.data, () => {
-          this.props.history.push('/');
-        });
+        this.props.setUserData(data, () => {
+          this.props.history.push('/'); 
+        })
       }
     }).catch(err => {
       if (err) throw err;

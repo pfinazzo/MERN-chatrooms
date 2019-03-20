@@ -4,34 +4,38 @@ import Dashboard from './pages/Dashboard';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
 import CreateChatroomForm from './pages/CreateChatroomForm';
-import {getUserData} from './utilities/userData';
 import AddFriend from './pages/AddFriend';
 import RequestsPage from './pages/RequestsPage';
 import FriendsPage from './pages/FriendsPage';
+import axios from 'axios';
 
 export default class App extends Component {
   state = {
     user: null
   }
 
-  componentWillMount(){
-    const user = getUserData();
-    this.setState({user})
-  }
-
-  componentWillUnmount(){
-    localStorage.clear(); // just for development
-  }
-
-  setUserData = (user, cb) => {
+setUserData = (user, cb) => {
+  if (!user) {
+    axios.get('/users').then(result => {
+      let user = result.data;
+      this.setState({user}, cb);
+    }).catch(err => {
+      if (err) throw err;
+    })
+  } else {
     this.setState({user}, cb);
   }
+}
+
+componentDidMount(){
+  this.setUserData();
+}
 
   render(){
     return (
       <Router>
         <div>
-        <Route exact path="/" render={(props) => this.state.user ? <Dashboard user={this.state.user} {...props}/> : <LoginPage  setUserData={this.setUserData} {...props}/>}/>
+        <Route exact path="/" render={(props) => this.state.user ? <Dashboard setUserData={this.setUserData} user={this.state.user} {...props}/> : <LoginPage  setUserData={this.setUserData} {...props}/>}/>
         <Route path="/signup" render={(props) => <SignUpPage setUserData={this.setUserData} {...props}/>}/>
         <Route path="/login" render={(props) => <LoginPage setUserData={this.setUserData} {...props}/>}/>
         <Route exact path="/create" render={(props) => this.state.user ? <CreateChatroomForm user={this.state.user} {...props}/> : <LoginPage  setUserData={this.setUserData} {...props}/>}/>

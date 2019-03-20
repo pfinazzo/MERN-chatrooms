@@ -3,6 +3,8 @@ const {cookieCheck, sessionCheck, login, signup, logout} = require('./../control
 
 router.use(cookieCheck);
 
+router.get('/', sessionCheck);
+
 router.post('/signup', sessionCheck, signup);
 
 router.post('/login', sessionCheck, login);

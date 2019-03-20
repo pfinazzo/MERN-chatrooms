@@ -10,12 +10,11 @@ function getCurrentReceivedFriendRequests(req, res) {
       receivedRequests = receivedRequests.map(request => {
         if (!request.declined) {
           let {
-            sender
+            sender,
+            _id
           } = request, {
             username
-          } = sender, {
-            _id
-          } = request;
+          } = sender;
           return {
             username,
             _id
@@ -85,8 +84,7 @@ function acceptFriendRequest(req, res) {
     if (err) throw err;
   }).finally(() => {
     FriendRequest.findByIdAndRemove(id).then(result => {
-      console.log(result);
-      res.send("success");
+      res.send("successfully added friend!");
     }).catch(err => {
       if (err) throw err;
     })
@@ -99,8 +97,8 @@ function getCurrentUserFriends(req, res) {
       _id
     } = req.session.user;
     User.findById(_id).populate('friends').then(result => {
-      console.log(result);
       let usernames = [];
+<<<<<<< HEAD
       result._doc.friends.forEach(({
         username
       }) => {
@@ -109,6 +107,11 @@ function getCurrentUserFriends(req, res) {
         });
       })
       console.log(usernames);
+=======
+      result.friends.forEach(({username}) => {
+        usernames.push({username});
+      });
+>>>>>>> unfriend
       res.json(usernames);
     }).catch(err => {
       if (err) throw err;
@@ -136,21 +139,25 @@ function declineFriendRequest(req, res) {
 }
 
 function unfriend(req, res) {
-  let {
-    username
-  } = req.body, {
-    _id
-  } = req.session.user;
-
-  User.findById(_id).then(user => {
-    User.findOne({
-      username
-    }).then(friend => {
-      user.friends = user.friends.filter(userFriend => userFriend.toString() !== friend._id.toString());
-      friend.friends = friend.friends.filter(friendFriend => friendFriend.toString() !== user._id.toString());
-      user.save();
-      friend.save();
+  let {username} = req.body, 
+  {_id} = req.session.user,
+  friendId;
+  console.log(username, _id)
+  // username = friends username
+  // _id = current logged in user
+  User.findOne({username}).then(friend => {
+    console.log('friend', friend._id);
+    console.log('friend.friends', friend);
+    friendId = friend._id.toString();
+    console.log("_id and friend Id", _id, friendId);
+  }).then(() => {
+    console.log("friendId", friendId)
+    User.findByIdAndUpdate(_id, { $pull: { friends:  {$in: [friendId]} } }, { new: true  }).then(user => {
+      console.log("current user", user);
+      console.log("current user friends", user.friends);
       res.end();
+    }).catch(err => {
+      if (err) throw err;
     })
   })
 
@@ -169,7 +176,7 @@ function addFriend(req, res) {
       })
     })
   } else {
-    res.send('cannot add yourself as a friend')
+    res.send('cannot add yourself as a')
   }
 }
 
@@ -183,3 +190,11 @@ module.exports = {
   declineFriendRequest,
   addFriend,
 }
+  
+
+
+
+
+
+
+

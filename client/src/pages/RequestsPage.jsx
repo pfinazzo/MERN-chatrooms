@@ -17,7 +17,7 @@ export default class RequestsPage extends Component {
     console.log('hit fetch data function  ')
     axios.get('/friends/received-friend-requests').then(res => {
       if (res.data === "not good"){
-        localStorage.clear();
+        console.log('session expired, please re log in');
         this.props.history.push('/login');
       }
       let receivedRequests = res.data;
@@ -45,7 +45,6 @@ export default class RequestsPage extends Component {
   }
 
   reload = () => {
-    console.log('hit reload function')
     this.fetchData();
   }
 

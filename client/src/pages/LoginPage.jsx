@@ -14,7 +14,6 @@ import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import NavBar from '../components/NavBar';
 import axios from 'axios';
-import {setUserData} from './../utilities/userData';
 
 const styles = theme => ({
   main: {
@@ -58,16 +57,9 @@ class LoginPage extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     axios.post("/users/login", this.state).then(res => {
-      let {username, email, _id} = res.data;
-      if (username && email && _id){
-        let userData = {username, email, _id};
-        setUserData(JSON.stringify(userData));
-        this.props.setUserData(res.data, () => {
-          this.props.history.push('/');
-        });
-      } else {
-        console.log(res);
-      }
+      this.props.setUserData(res.data, () => {
+        this.props.history.push('/')
+      });
     }).catch(err => {
       if (err) throw err;
     })
@@ -96,11 +88,11 @@ class LoginPage extends Component {
             <form className={classes.form}>
               <FormControl margin="normal" required fullWidth>
                 <InputLabel htmlFor="email">Username</InputLabel>
-                <Input onChange={(e) => this.handleFormChange(e, "username")}id="email" name="email" autoComplete="email" autoFocus />
+                <Input onChange={(e) => this.handleFormChange(e, "username")} id="email" name="email" autoComplete="email" autoFocus />
               </FormControl>
               <FormControl margin="normal" required fullWidth>
                 <InputLabel htmlFor="password">Password</InputLabel>
-                <Input onChange={(e) => this.handleFormChange(e, "password")}name="password" type="password" id="password" autoComplete="current-password" />
+                <Input onChange={(e) => this.handleFormChange(e, "password")} name="password" type="password" id="password" autoComplete="current-password" />
               </FormControl>
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
@@ -119,13 +111,13 @@ class LoginPage extends Component {
             </form>
           </Paper>
         </main>
-        </div>
-        )
-      }
-    }
-    
+      </div>
+    )
+  }
+}
+
 LoginPage.propTypes = {
-          classes: PropTypes.object.isRequired,
-      };
-      
+  classes: PropTypes.object.isRequired,
+};
+
 export default withStyles(styles)(LoginPage);

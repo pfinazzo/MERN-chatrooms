@@ -1,23 +1,18 @@
 var express = require('express'),
       app = express(),
-      session = require('express-session'),
       cookieParser = require('cookie-parser'),
       {config} = require('dotenv'),
       {join} = require('path'),
+      logger = require('morgan'),
       {urlencoded, json, static} = express;
 
 require('./config/connection');
 config();
+app.use(logger('dev'));
 app.use(urlencoded({extended: true}))
 app.use(json());
 app.use(cookieParser());
-app.use(session({
-  key: 'user_sid',
-  secret: 'covfefe', // change to env var later
-  resave: false,
-  saveUninitialized: false,
-  cookie: {expires: 6000000}
-}))
+require('./session')(app);
 app.use(static(join(__dirname, "./client/public/assets")));
 
 
