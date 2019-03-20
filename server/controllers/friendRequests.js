@@ -98,20 +98,9 @@ function getCurrentUserFriends(req, res) {
     } = req.session.user;
     User.findById(_id).populate('friends').then(result => {
       let usernames = [];
-<<<<<<< HEAD
-      result._doc.friends.forEach(({
-        username
-      }) => {
-        usernames.push({
-          username
-        });
-      })
-      console.log(usernames);
-=======
       result.friends.forEach(({username}) => {
         usernames.push({username});
       });
->>>>>>> unfriend
       res.json(usernames);
     }).catch(err => {
       if (err) throw err;
