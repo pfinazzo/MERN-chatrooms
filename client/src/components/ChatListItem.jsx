@@ -10,7 +10,12 @@ let latestMessageStyle = {
   fontSize: '10px',
   marginTop: '-18px',
   height: '50%',
-  width: '30%'
+  width: '30%',
+}
+
+let listItemStyle = {
+  borderBottom: "1px solid black",
+  width: "100%"
 }
 
 
@@ -21,7 +26,7 @@ function ChatListItem(props) {
 
 
   return (
-    <ListItem alignItems="flex-start">
+    <ListItem style={listItemStyle} alignItems="flex-start">
       {/* will use avatar later when user can upload photo file, probably with gridfs */}
       {/* <ListItemAvatar>
             <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />

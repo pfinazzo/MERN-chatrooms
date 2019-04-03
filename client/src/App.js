@@ -35,7 +35,8 @@ componentDidMount(){
     return (
       <Router>
         <div>
-        <Route exact path="/" render={(props) => this.state.user ? <Dashboard setUserData={this.setUserData} user={this.state.user} {...props}/> : <LoginPage  setUserData={this.setUserData} {...props}/>}/>
+    <Route exact path="/" component={(props) => <Dashboard setUserData={this.setUserData} user={this.state.user}/> }/>
+        {/* <Route exact path="/" render={(props) => this.state.user ? <Dashboard setUserData={this.setUserData} user={this.state.user} {...props}/> : <LoginPage  setUserData={this.setUserData} {...props}/>}/> */}
         <Route path="/signup" render={(props) => <SignUpPage setUserData={this.setUserData} {...props}/>}/>
         <Route path="/login" render={(props) => <LoginPage setUserData={this.setUserData} {...props}/>}/>
         <Route exact path="/create" render={(props) => this.state.user ? <CreateChatroomForm user={this.state.user} {...props}/> : <LoginPage  setUserData={this.setUserData} {...props}/>}/>

@@ -10,7 +10,7 @@ import StandardButton from './../components/StandardButton';
 
 const styles = {
   card: {
-    minWidth: 275,
+    minWidth: 200,
   },
   bullet: {
     display: 'inline-block',

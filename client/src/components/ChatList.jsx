@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
-import ChatListItem from './ChatListItem'; 
+import ChatListItem from './ChatListItem';
+import Card from '@material-ui/core/Card/Card';
 
 
 const styles = theme => ({
   root: {
     width: '100%',
-    maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
   },
   inline: {
@@ -34,20 +34,27 @@ class ChatList extends Component {
           users: [' jon', ' doodlebob', 'patrick star'],
           messages: [{
             text: "me hoy minoy",
-            from : "doodlebob"
+            from: "doodlebob"
           }],
         }
       ]
     }
   }
+
+  cardStyle = {
+    height: "500px",
+    width: "400px"
+  }
   render() {
     const { classes } = this.props;
     return (
-      <List className={classes.root}>
-      {this.state.fakeData.map(chat => {
-        return <ChatListItem classes={classes} chatroomName={chat.chatroomName} userNames={chat.users} latestMessage={chat.messages[0]}/>
-      })}
-      </List>
+      <Card style={this.cardStyle}>
+        <List className={classes.root}>
+          {this.state.fakeData.map(chat => {
+            return <ChatListItem classes={classes} chatroomName={chat.chatroomName} userNames={chat.users} latestMessage={chat.messages[0]} />
+          })}
+        </List>
+      </Card>
     );
   }
 }

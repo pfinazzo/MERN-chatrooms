@@ -65,9 +65,9 @@ class LoginPage extends Component {
     })
   }
 
-  handleFormChange = (e, name) => {
+  handleFormChange = ({target: {value}}, name) => {
     this.setState({
-      [name]: e.target.value
+      [name]: value
     })
   }
 
