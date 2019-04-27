@@ -1,5 +1,5 @@
 const User = require('./../models/User');
-const {validToken, createToken} = require('../utilities/tokenServiceokenService');
+const {validToken, createToken} = require('../utilities/tokenService');
 
 
 function cookieCheck({signedCookies: {token}}, res) {

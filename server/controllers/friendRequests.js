@@ -1,6 +1,6 @@
 const User = require('./../models/User'),
   FriendRequest = require('./../models/FriendRequest'),
-  { validToken } = require('../utilities/tokenServiceokenService');
+  { validToken } = require('../utilities/tokenService');
 
 function getCurrentReceivedFriendRequests({ signedCookies: { token } }, res) {
   validToken(token).then(user => {
@@ -10,7 +10,7 @@ function getCurrentReceivedFriendRequests({ signedCookies: { token } }, res) {
     }).populate('sender').then(receivedRequests => {
       receivedRequests = receivedRequests.map(request => {
         if (!request.declined) {
-          let { sender: {username}, _id } = request;
+          let { sender: { username }, _id } = request;
           return { username, _id };
         } else {
           return { username: null, _id: null }
@@ -39,23 +39,21 @@ function getCurrentSentFriendRequests({ signedCookies: { token } }, res) {
   })
 }
 
-function deleteFriendRequest({ signedCookies: { token } }, res) {
-  let {
-    id
-  } = req.body;
-  FriendRequest.findByIdAndDelete(id).then(result => {
-    res.send(result);
-  }).catch(err => {
-    if (err) throw err;
+function deleteFriendRequest({ signedCookies: { token }, body: { id } }, res) {
+  validToken(token).then(user => {
+    FriendRequest.findById(id).then(result => {
+      if (result.sender === user._id) {
+        result.remove();
+      }
+    }).catch(err => {
+      if (err) throw err;
+    })
   })
 }
 
-function acceptFriendRequest({ signedCookies: { token } }, res) {
-  let {
-    id
-  } = req.body; // _id of current request
+function acceptFriendRequest({ signedCookies: { token }, body: { id } }, res) {
   FriendRequest.findById(id).populate('sender').populate('receiver').then(request => {
-    request.sender.friends.push(request.receiver._id); 
+    request.sender.friends.push(request.receiver._id);
     request.receiver.friends.push(request.sender._id);
     request.sender.save();
     request.receiver.save();
@@ -71,7 +69,7 @@ function acceptFriendRequest({ signedCookies: { token } }, res) {
 }
 
 function getCurrentUserFriends({ signedCookies: { token } }, res) {
-  validToken(token).then((_id) => {
+  validToken(token).then(({ user: { _id } }) => {
     User.findById(_id).populate('friends').then(result => {
       let usernames = [];
       result.friends.forEach(({ username }) => {
@@ -109,13 +107,15 @@ function unfriend(
     let friendId;
     User.findOne({ username }).then(friend => {
       friendId = friend._id;
-      // remove currently logged in user id from friends array of friend
+      // remove currently logged in user id from friend's array of friend
       friend.friends = friend.friends.filter(id => id !== _id);
+      console.log(friend.friends)
       friend.save();
     }).then(() => {
-      console.log('hit1')
       User.findById(_id).then(user => {
+        // remove friendid from currently logged in user's array of friends
         user.friends = user.friends.filter(id => id !== friendId);
+        console.log(friend.friends);
         user.save();
         res.send(user.friends);
       });
@@ -125,10 +125,13 @@ function unfriend(
   })
 }
 
-function addFriend({ signedCookies: { token } }, res) {
+function addFriend({ signedCookies: { token }, body }, res) {
+  console.log(token);
+  console.log(body);
   validToken(token).then(({ username, _id }) => {
-    if (username !== req.body.username) {
-      User.findOne(req.body).then(receiver => {
+    console.log(username)
+    if (username !== body.username) {
+      User.findOne(body).then(receiver => {
         FriendRequest.create({
           sender: _id,
           receiver: receiver._id
@@ -137,6 +140,8 @@ function addFriend({ signedCookies: { token } }, res) {
         }).catch(err => {
           if (err) throw err;
         })
+      }).catch(err => {
+        if (err) throw err;
       })
     } else {
       res.send('cannot add yourself')

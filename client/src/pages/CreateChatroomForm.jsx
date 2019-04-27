@@ -69,7 +69,7 @@ class CreateChatroomForm extends React.Component {
   handleSubmit = () => {
     let {admins, users, name} = this.state,
         payload = {admins, users, name};
-    axios.post('/chatrooms', payload).then(res => {
+    axios.post('/chatrooms', payload, {withCredentials: true}).then(res => {
       console.log(res); 
     }).catch(err => {
       if (err) throw err;

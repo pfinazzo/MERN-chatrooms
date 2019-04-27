@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Grid from '@material-ui/core/Grid';
 import Dashboard from './pages/Dashboard';
 import SignUpPage from './pages/SignUpPage';
 import LoginPage from './pages/LoginPage';
@@ -8,6 +9,7 @@ import AddFriend from './pages/AddFriend';
 import RequestsPage from './pages/RequestsPage';
 import FriendsPage from './pages/FriendsPage';
 import axios from 'axios';
+import LoadingSign from './components/LoadingSign';
 
 export default class App extends Component {
   state = {
@@ -16,7 +18,7 @@ export default class App extends Component {
 
   setUserData = (user, cb) => {
     if (!user) {
-      axios.get('/users/authorized').then(result => {
+      axios.get('/users/authorized', {withCredentials: true}).then(result => {
         let user = result.data;
         this.setState({ user }, cb);
       }).catch(err => {
@@ -27,15 +29,28 @@ export default class App extends Component {
     }
   }
 
-  componentDidMount() {
-    axios.get('/users/authorized').then(({data: {user}}) => {
-      this.setUserData(user, () => {
-        console.log(this.state);
-      })
-    })
+  componentWillMount() {
+    setTimeout(() => {  
+      axios.get('/users/authorized', {withCredentials: true}).then(( { data: { user } } ) => {
+        this.setUserData(user, () => {
+          console.log(this.state);
+        })
+      })  
+    },1000)
   }
 
+
   render() {
+    if (!this.state.user){
+      return (<Grid container spacing={24} justify="center" alignContent="center" alignItems="center">
+      <Grid item xs={12}>
+        <div style={this.wrapStyle}>
+          <h1 style={{textAlign: "center"}}>loading...</h1>
+          <LoadingSign />
+        </div>
+      </Grid>
+    </Grid>)
+    }
     return (
       <Router>
         <div>
