@@ -15,11 +15,8 @@ export default class App extends Component {
   }
 
   setUserData = (user, cb) => {
-    if (user === 'login failed'){
-      return;
-    }
     if (!user) {
-      axios.get('/users').then(result => {
+      axios.get('/users/authorized').then(result => {
         let user = result.data;
         this.setState({ user }, cb);
       }).catch(err => {
@@ -31,15 +28,18 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    this.setUserData();
+    axios.get('/users/authorized').then(({data: {user}}) => {
+      this.setUserData(user, () => {
+        console.log(this.state);
+      })
+    })
   }
 
   render() {
     return (
       <Router>
         <div>
-          {/* <Route exact path="/" component={(props) => this.state.user ? <Dashboard user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} /> */}
-          <Route exact path="/" render={(props) => this.state.user ? <Dashboard setUserData={this.setUserData} user={this.state.user} {...props}/> : <LoginPage  setUserData={this.setUserData} {...props}/>}/>
+          <Route exact path="/" render={(props) => this.state.user ? <Dashboard setUserData={this.setUserData} user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
           <Route path="/signup" render={(props) => <SignUpPage setUserData={this.setUserData} {...props} />} />
           <Route path="/login" render={(props) => <LoginPage setUserData={this.setUserData} {...props} />} />
           <Route exact path="/create" render={(props) => this.state.user ? <CreateChatroomForm user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />

@@ -57,7 +57,8 @@ export default class Chatroom extends Component {
 
   formValid = () => !!this.state.currentMessage;
 
-  handleSubmit = () => {
+  handleSubmit = (e) => {
+    e.preventDefault();
     let messages = [...this.state.messages];
     messages.unshift({ text: this.state.currentMessage, username: this.props.username });
     this.setState({ messages }, () => console.log(this.state));
@@ -97,14 +98,16 @@ export default class Chatroom extends Component {
         <Card style={this.cardStyle}>
           <CardContent style={this.cardContentStyle}>
             <div style={this.messagesWrapperStyle}>
-              {this.state.messages.map(message => message.username === this.props.username ? 
-                <Paper style={this.userMessageStyle}>{message.text} - {message.username}</Paper> : 
+              {this.state.messages.map(message => message.username === this.props.username ?
+                <Paper style={this.userMessageStyle}>{message.text} - {message.username}</Paper> :
                 <Paper style={this.messageStyle}>{message.username} - {message.text} </Paper>)}
             </div>
-            <div style={this.inputWrapperStyle}>
-              <TextField onChange={e => this.handleInputChange(e, "currentMessage")} style={this.inputStyle} />
-              <StandardButton callback={this.handleSubmit} formValid={this.formValid()}>Submit</StandardButton>
-            </div>
+            <form onSubmit={this.handleSubmit} action="">
+              <div style={this.inputWrapperStyle}>
+                <TextField onChange={e => this.handleInputChange(e, "currentMessage")} style={this.inputStyle} />
+                <StandardButton callback={this.handleSubmit} formValid={this.formValid()}>Submit</StandardButton>
+              </div>
+            </form>
           </CardContent>
         </Card>
       </div>

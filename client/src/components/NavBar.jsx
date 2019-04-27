@@ -34,7 +34,6 @@ class NavBar extends Component {
 
   routeTo = (path) => {
     if (path === "/logout") {
-      localStorage.clear();
       axios.get("/users/logout").then(res => {
         this.setState({
           user: {

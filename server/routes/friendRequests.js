@@ -10,6 +10,7 @@ const router = require('express').Router(),
         unfriend
       } = require('./../controllers/friendRequests');
 
+
 router.get('/', getCurrentUserFriends);
 
 router.post('/add-friend', addFriend);

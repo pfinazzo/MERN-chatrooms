@@ -51,7 +51,7 @@ class FriendRequest extends Component {
     const { handleAdd, handleDelete, props } = this,
       { classes, header, text, _id, received } = props;
     let deleteButton;
-    if (header === "No friend requests sent" || header === "No friend requests received.. loser") {
+    if (header === "No friend requests sent" || header === "No friend requests received.. ") {
       deleteButton = null
     } else {
       deleteButton = <Button onClick={() => handleDelete(_id)}><DeleteIcon className={classes.icon} /></Button>

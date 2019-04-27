@@ -1,13 +1,11 @@
 const router = require('express').Router();
-const {cookieCheck, sessionCheck, login, signup, logout} = require('./../controllers/user');
+const {cookieCheck, login, signup, logout} = require('./../controllers/user');
 
-router.use(cookieCheck);
+router.get('/authorized', cookieCheck);
 
-router.get('/', sessionCheck);
+router.post('/signup', signup);
 
-router.post('/signup', sessionCheck, signup);
-
-router.post('/login', sessionCheck, login);
+router.post('/login', login);
 
 router.get('/logout', logout);
 

@@ -59,7 +59,7 @@ class Dashboard extends Component {
             <Grid item xs={12}>
               <h1 style={this.welcomeStyle}>Welcome {username}</h1>
             </Grid>
-            <Grid container item xs={6} direction="column" justify="center" alignItems="center">
+            <Grid container xs={6} direction="column" justify="center" alignItems="center">
               <ChatList />
               <CreateButton callback={() => this.routeTo('/create')} />
             </Grid>

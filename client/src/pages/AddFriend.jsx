@@ -42,8 +42,7 @@ class AddFriend extends Component {
 
   handleSubmit = () => {
     axios.get('/friends').then(res => {
-      if (res.data === "not good") {
-        localStorage.clear();
+      if (res.data === "no user") {
         this.props.history.push('/login');
       }
       let friends = res.data;
