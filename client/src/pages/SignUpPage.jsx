@@ -54,10 +54,8 @@ class SignUpPage extends Component {
     this.state = {};
   }
 
-  handleChange = (e, key  ) => {
-    this.setState({
-      [key]: e.target.value
-    })
+  handleChange = ({target: {value}}, name) => {
+    this.setState({ [name]: value });
   }
   
 
@@ -69,7 +67,6 @@ class SignUpPage extends Component {
     e.preventDefault();
     axios.post("/users/signup", this.state).then(res => {
       let {data} = res;
-      console.log(data);
       if (res.statusText === "OK"){
         this.props.setUserData(data, () => {
           this.props.history.push('/'); 

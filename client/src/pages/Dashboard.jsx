@@ -41,17 +41,17 @@ class Dashboard extends Component {
 
   render() {
     const { classes } = this.props;
-    // if (!this.props.user) {
-    //   return (<Grid container spacing={24} justify="center" alignContent="center" alignItems="center">
-    //     <Grid item xs={12}>
-    //       <div style={this.wrapStyle}>
-    //         <h1 style={this.welcomeStyle}>loading...</h1>
-    //         <LoadingSign />
-    //       </div>
-    //     </Grid>
-    //   </Grid>)
-    // } else {
-      let username = this.props.user ? "yay" : "nay";
+    if (!this.props.user) {
+      return (<Grid container spacing={24} justify="center" alignContent="center" alignItems="center">
+        <Grid item xs={12}>
+          <div style={this.wrapStyle}>
+            <h1 style={this.welcomeStyle}>loading...</h1>
+            <LoadingSign />
+          </div>
+        </Grid>
+      </Grid>)
+    } else {
+      let {username} = this.props.user
       return (
         <div className={classes.root}>
           <NavBar {...classes} {...this.props} />
@@ -59,19 +59,19 @@ class Dashboard extends Component {
             <Grid item xs={12}>
               <h1 style={this.welcomeStyle}>Welcome {username}</h1>
             </Grid>
-            <Grid container item xs={6} direction="column" justify="center" alignItems="center">
+            <Grid container xs={6} direction="column" justify="center" alignItems="center">
               <ChatList />
               <CreateButton callback={() => this.routeTo('/create')} />
             </Grid>
             <Grid xs={6} justify="center" alignItems="center">
-              <Chatroom />
+              <Chatroom username={this.props.user.username} />
             </Grid>
           </Grid>
         </div>
       );
     }
   }
-// }
+}
 
   Dashboard.propTypes = {
     classes: PropTypes.object.isRequired,

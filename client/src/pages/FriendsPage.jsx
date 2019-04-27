@@ -16,7 +16,7 @@ export default class FriendsPage extends Component{
   fetchData = () => {
     axios.get('/friends').then(res => {
       console.log(res);
-      if (res.data === "not good"){
+      if (res.data === "no user"){
         this.props.history.push('/login');
       }
       let friends = res.data;

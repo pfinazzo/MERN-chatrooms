@@ -57,18 +57,18 @@ class LoginPage extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     axios.post("/users/login", this.state).then(res => {
-      this.props.setUserData(res.data, () => {
-        this.props.history.push('/')
-      });
+      if (res.statusText === "OK"){ 
+        this.props.setUserData(res.data, () => {
+          this.props.history.push('/')
+        });
+      }
     }).catch(err => {
       if (err) throw err;
     })
   }
 
   handleFormChange = ({target: {value}}, name) => {
-    this.setState({
-      [name]: value
-    })
+    this.setState({ [name]: value });
   }
 
   render() {

@@ -1,75 +1,60 @@
 const User = require('./../models/User');
+const {validToken, createToken} = require('../utilities/tokenServiceokenService');
 
-function cookieCheck(req, res, next) {
-  if (req.cookies.user_sid && !req.session.user) {
-    res.clearCookie('user_sid');
+
+function cookieCheck({signedCookies: {token}}, res) {
+  if (token) {
+    validToken(token).then(({user: {username}}) => {
+      User.findOne({username}).then(({username, email}) => {
+        return res.send({ username, email });
+      }).catch(err => {
+        if (err) throw err;
+      })
+    }).catch(err => {
+      if (err) throw err;
+    })
+  } else {
+    res.json({err: "please log back in"});
   }
-  next();
 }
 
 
-// middleware function to check for logged-in users
-function sessionCheck(req, res, next) {
-  if (req.session.user && req.cookies.user_sid) {
-    let {
-      username
-    } = req.session.user;
-    User.findOne({
-      username
-    }).populate({
-      path: 'friends',
-      select: '-password -_id -chatrooms -friends'
-    }).populate({
-      path: 'chatrooms',
-      select: '-_id'
-    }).then(user => {
-      let userData = user.toJSON();
-      res.send(userData);
-    })
-  } else {
-    next();
-  }
+function signup({body}, res) {
+  User.create(body).then(user => {
+      let token = createToken(user);
+      res.cookie('token', token, {
+        httpOnly: true, // only accessible from same origin
+        // secure: true, // only accessible over https, this will be commented back in for when its deployed
+        maxAge: 1000 * 60 * 60, // one hour cookie age,
+        signed: true 
+      });
+      res.redirect('/users/authorized');
+  }).catch(err => {
+    if (err) throw err;
+  })
 };
 
 
-
-// post route for user signup
-function signup(req, res) {
-  User.create(req.body)
-    .then(user => {
-      req.session.user = user;
-      let userData = {
-        ...req.session.user._doc
-      };
-      delete userData.password;
-      res.send(userData);
-    })
-    .catch(error => {
-      if (error) throw error;
-      res.redirect('/users');
-    });
-};
-
-
-// post route for user Login
-function login(req, res) {
-  let {
-    username,
-    password
-  } = req.body;
+function login({body: {username, password}}, res) {
   if (username && password) {
     User.findOne({
       username
     }).exec().then(function (user) {
       if (!user) {
-        res.send('login failed');
+        res.status(400).json({err: "login failed"});
       } else {
         user.comparePassword(password, (err, match) => {
           if (!match) {
-            res.send('incorrect password');
+            res.status(400).json({err: "incorrect password"});
           } else {
-            req.session.user = user;
-            res.redirect('/users');
+            let token = createToken(user);
+            res.cookie('token', token, {
+              httpOnly: true, // only accessible from same origin
+              // secure: true, // only accessible over https
+              maxAge: 1000 * 60 * 60, // one hour cookie age,
+              signed: true 
+            });
+            res.redirect("/users/authorized");
           }
         })
       }
@@ -77,26 +62,20 @@ function login(req, res) {
       if (err) throw err;
     })
   } else {
-    res.send('missing username or password');
+    res.status(400).json({err: "incorrect username or password"})
   }
+
 };
 
-// route for user logout
 function logout(req, res) {
-  if (req.session.user && req.cookies.user_sid) {
-    res.clearCookie('user_sid');
-    req.session.destroy();
-    res.end();
-  } else {
-    res.send('route to login page');
-  }
+  res.clearCookie('token');
+  res.send('successfully logged out');
 }
 
 
 
 module.exports = {
   cookieCheck,
-  sessionCheck,
   login,
   signup,
   logout

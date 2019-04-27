@@ -45,6 +45,7 @@ class ChatList extends Component {
     height: "500px",
     width: "400px"
   }
+  
   render() {
     const { classes } = this.props;
     return (

@@ -1,20 +1,18 @@
-var express = require('express'),
+require('dotenv').config();
+const express = require('express'),
       app = express(),
       cookieParser = require('cookie-parser'),
-      {config} = require('dotenv'),
-      {join} = require('path'),
+      {SECRET} = process.env,
       logger = require('morgan'),
-      {urlencoded, json, static} = express;
+      {urlencoded, json} = express;
 
 require('./config/connection');
-config();
+
 app.use(logger('dev'));
 app.use(urlencoded({extended: true}))
 app.use(json());
-app.use(cookieParser());
-require('./session')(app);
-app.use(static(join(__dirname, "./client/public/assets")));
-
+app.use(cookieParser(SECRET));
+// require('./session')(app);
 
 app.use('/users', require('./routes/user'));
 app.use('/friends', require('./routes/friendRequests'));
