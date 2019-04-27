@@ -41,7 +41,8 @@ class AddFriend extends Component {
   }
 
   handleSubmit = () => {
-    axios.get('/friends').then(res => {
+    axios.get('/friends', {withCredentials: true}).then(res => {
+      console.log(res);
       if (res.data === "no user") {
         this.props.history.push('/login');
       }
@@ -49,7 +50,7 @@ class AddFriend extends Component {
       this.setState({ friends }, () => {
         let usernames = this.state.friends.map(({ username }) => username);
         if (!usernames.includes(this.state.user.username)) {
-          axios.post('/friends/add-friend', this.state.user).then(res => {
+          axios.post('/friends/add-friend', this.state.user, {withCredentials: true}).then(res => {
             if (res.statusText === "OK") {
               this.props.history.push('/requests');
             }

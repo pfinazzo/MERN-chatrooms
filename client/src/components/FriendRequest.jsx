@@ -23,13 +23,13 @@ class FriendRequest extends Component {
 
   handleDelete = (id) => {
     if (this.props.received) {
-      axios.post('/friends/decline-friend-request', { id }).then(res => {
+      axios.post('/friends/decline-friend-request', { id }, {withCredentials: true}).then(res => {
         if (res.status === 200) this.props.reload();
       }).catch(err => {
         if (err) throw err;
       })
     } else {
-      axios.post('/friends/delete-friend-request', {id}).then(res => {
+      axios.post('/friends/delete-friend-request', {id}, {withCredentials: true}).then(res => {
         if (res.status === 200) this.props.reload();
       }).catch(err => {
         if(err) throw err;
@@ -38,7 +38,7 @@ class FriendRequest extends Component {
   }
 
   handleAdd = (id) => {
-    axios.put('/friends/accept-friend-request', { id }).then(res => {
+    axios.put('/friends/accept-friend-request', { id }, {withCredentials: true}).then(res => {
       if (res.data === "success"){
         window.location.reload(); // janky fix 
       } 

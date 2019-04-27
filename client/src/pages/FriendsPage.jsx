@@ -13,8 +13,8 @@ export default class FriendsPage extends Component{
     textAlign: "center"
   }
 
-  fetchData = () => {
-    axios.get('/friends').then(res => {
+  getFriends = () => {
+    axios.get('/friends', {withCredentials: true}).then(res => {
       console.log(res);
       if (res.data === "no user"){
         this.props.history.push('/login');
@@ -26,7 +26,7 @@ export default class FriendsPage extends Component{
     })
   }
   componentWillMount(){
-    this.fetchData();
+    this.getFriends();
   }
 
   render(){
@@ -34,7 +34,7 @@ export default class FriendsPage extends Component{
       <Grid justify="center" alignContent="space-evenly">
           <NavBar {...this.props}/>
           <h1 style={this.headerStyle}>Friends</h1>
-          <FriendList fetchData={this.fetchData} friends={this.state.friends} />
+          <FriendList getFriends={this.getFriends} friends={this.state.friends} />
       </Grid>
     )
   }

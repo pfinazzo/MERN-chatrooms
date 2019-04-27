@@ -21,9 +21,9 @@ const styles = theme => ({
 class FriendList extends Component {
   
   handleDelete = (username) => {
-    axios.post('/friends/unfriend', { username }).then(res => {
+    axios.post('/friends/unfriend', { username },  {withCredentials: true}).then(res => {
       if (res.status === 200) {
-        this.props.fetchData();
+        this.props.getFriends();
       }
     }).catch(err => {
       if (err) throw err;
@@ -31,7 +31,6 @@ class FriendList extends Component {
   }
   render() {
     const { classes, friends } = this.props;
-    // {username} = user;
     return (
       <List className={classes.root}>
         {friends.map(friend => <Friend handleDelete={this.handleDelete} id={friend._id} name={friend.username} />)}

@@ -42,14 +42,14 @@ class Dashboard extends Component {
   render() {
     const { classes } = this.props;
     if (!this.props.user) {
-      return (<Grid container spacing={24} justify="center" alignContent="center" alignItems="center">
-        <Grid item xs={12}>
-          <div style={this.wrapStyle}>
-            <h1 style={this.welcomeStyle}>loading...</h1>
-            <LoadingSign />
-          </div>
-        </Grid>
-      </Grid>)
+        return (<Grid container spacing={24} justify="center" alignContent="center" alignItems="center">
+          <Grid item xs={12}>
+            <div>
+              <h1 style={this.welcomeStyle}>loading...</h1>
+              <LoadingSign />
+            </div>
+          </Grid>
+        </Grid>)
     } else {
       let {username} = this.props.user
       return (

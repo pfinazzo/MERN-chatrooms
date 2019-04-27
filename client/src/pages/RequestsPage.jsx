@@ -14,13 +14,13 @@ export default class RequestsPage extends Component {
   }
 
   fetchData = () =>{
-    axios.get('/friends/received-friend-requests').then(res => {
+    axios.get('/friends/received-friend-requests', {withCredentials: true}).then(res => {
       if (res.data === "no user"){
         this.props.history.push('/login');
       }
       let receivedRequests = res.data;
       this.setState({ receivedRequests }, () => {
-        axios.get('/friends/sent-friend-requests').then(res => {
+        axios.get('/friends/sent-friend-requests', {withCredentials: true}).then(res => {
           let sentRequests = res.data;
           this.setState({ sentRequests }, () => {
             setTimeout(() => {
@@ -63,10 +63,10 @@ export default class RequestsPage extends Component {
           if (request.username){
             return <Grid item xs="12"><FriendRequest reload={this.reload} _id={request._id} received={true} header={request.username} text="Accept user?" /></Grid>
           } else {
-            return <Grid item xs="12"><FriendRequest header={"No friend requests received.. "} text="I'm just kidding, but yeah if someone adds you as a friend it will show up here  " /></Grid>
+            return <Grid item xs="12"><FriendRequest header={"No friend requests received.. "} text="if someone adds you as a friend it will show up here  " /></Grid>
           }
         }) :
-        <Grid item xs="12"><FriendRequest header={"No friend requests received.. "} text="I'm just kidding, but yeah if someone adds you as a friend it will show up here  " /></Grid>,
+        <Grid item xs="12"><FriendRequest header={"No friend requests received.. "} text="if someone adds you as a friend it will show up here  " /></Grid>,
 
       renderedSent = sentRequests.length ?
         sentRequests.map(request => <Grid item xs="12"><FriendRequest reload={this.reload} _id={request._id} header={request.username} text="pending acceptance" /></Grid>) :
