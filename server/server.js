@@ -12,7 +12,6 @@ app.use(logger('dev'));
 app.use(urlencoded({extended: true}))
 app.use(json());
 app.use(cookieParser(SECRET));
-// require('./session')(app);
 
 app.use('/users', require('./routes/user'));
 app.use('/friends', require('./routes/friendRequests'));
