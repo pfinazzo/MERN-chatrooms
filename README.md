@@ -11,7 +11,7 @@ to run this locally follow these steps:
 Created with 
   - node v 11.2.0
 
-####Backend Technologies
+###Backend Technologies
   - Express
   - jsonwebtoken
   - mongoose 
@@ -24,10 +24,11 @@ Created with
 
 
 
-####Front
-  - React
+### Front End Technologies
+  - react
   - axios 
   - react-router-dom
+  - react-dom
   - material UI
 
 
