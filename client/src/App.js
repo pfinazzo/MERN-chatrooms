@@ -59,13 +59,13 @@ export default class App extends Component {
     } else {
       return (
         <Switch>
-          <Route exact path="/" render={(props) => this.state.user ? <Dashboard setUserData={this.setUserData} user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
+          <Route exact path="/" render={(props) => this.state.user.username ? <Dashboard setUserData={this.setUserData} user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
           <Route path="/signup" render={(props) => <SignUpPage setUserData={this.setUserData} {...props} />} />
           <Route path="/login" render={(props) => <LoginPage setUserData={this.setUserData} {...props} />} />
-          <Route exact path="/create" render={(props) => this.state.user ? <CreateChatroomForm user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
-          <Route exact path="/add-friend" render={(props) => this.state.user ? <AddFriend user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
-          <Route exact path="/requests" render={(props) => this.state.user ? <RequestsPage user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
-          <Route exact path="/friends" render={(props) => this.state.user ? <FriendsPage user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
+          <Route exact path="/create" render={(props) => this.state.user.username ? <CreateChatroomForm user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
+          <Route exact path="/add-friend" render={(props) => this.state.user.username ? <AddFriend user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
+          <Route exact path="/requests" render={(props) => this.state.user.username ? <RequestsPage user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
+          <Route exact path="/friends" render={(props) => this.state.user.username ? <FriendsPage user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
         </Switch>
       )
     }

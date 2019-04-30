@@ -4,7 +4,7 @@ const {validToken, createToken} = require('../utilities/tokenService');
 
 function cookieCheck({signedCookies: {token}}, res) {
   if (token) {
-    validToken(token).then(({_id}) => {
+    validToken(token).then(({user: {_id}})=> {
       User.findById(_id).then(user => {
         if (user) {
           let {username, email} = user;
