@@ -9,6 +9,7 @@ function getCurrentReceivedFriendRequests({ signedCookies: { token } }, res) {
       receiverId
     }).populate('sender').then(receivedRequests => {
       receivedRequests = receivedRequests.map(request => {
+        console.log(request);
         if (!request.declined) {
           let { sender: { username }, _id } = request;
           return { username, _id };

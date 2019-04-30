@@ -32,15 +32,26 @@ class AddFriend extends Component {
     }
   }
 
+  componentDidMount(){
+    let {user} = this.props;
+    this.setState({user})
+  }
+
   formValid = () => {
-    return !!this.state.user.username;
+    return !!this.state.username;
   }
 
   handleChange = (key, e) => {
-    this.setState({ [key]: { username: e.target.value } });
+    this.setState({ [key]:  e.target.value }, () => {
+      console.log(this.state);
+    });
   }
 
   handleSubmit = () => {
+    console.log(this.state);
+    if (this.state.username === this.state.user.username){
+      return alert('you cannot add yourself as a friend');
+    }
     axios.get('/friends', {withCredentials: true}).then(res => {
       console.log(res);
       if (res.data === "no user") {
@@ -49,7 +60,7 @@ class AddFriend extends Component {
       let friends = res.data;
       this.setState({ friends }, () => {
         let usernames = this.state.friends.map(({ username }) => username);
-        if (!usernames.includes(this.state.user.username)) {
+        if (!usernames.includes(this.state.username)) {
           axios.post('/friends/add-friend', this.state.user, {withCredentials: true}).then(res => {
             if (res.statusText === "OK") {
               this.props.history.push('/requests');
@@ -79,7 +90,7 @@ class AddFriend extends Component {
                 label="add a friend"
                 className={classes.textField}
                 value={this.state.name}
-                onChange={(e) => this.handleChange('user', e)}
+                onChange={(e) => this.handleChange('username', e)}
                 margin="normal"
               />
               <StandardButton formValid={this.formValid()} callback={this.handleSubmit} />
