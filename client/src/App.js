@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
 import Dashboard from './pages/Dashboard';
 import SignUpPage from './pages/SignUpPage';
@@ -18,11 +18,17 @@ export default class App extends Component {
 
   setUserData = (user, cb) => {
     if (!user) {
-      axios.get('/users/authorized', {withCredentials: true}).then(result => {
+      axios.get('/users/authorized', { withCredentials: true }).then(result => {
         let user = result.data;
-        this.setState({ user }, cb);
+        if (user.username) {
+          this.setState({ user }, cb);
+        } else {
+          this.setState({ user });
+        }
       }).catch(err => {
-        if (err) throw err;
+        if (err) {
+          console.error(err);
+        }
       })
     } else {
       this.setState({ user }, cb);
@@ -30,30 +36,29 @@ export default class App extends Component {
   }
 
   componentWillMount() {
-    setTimeout(() => {  
-      axios.get('/users/authorized', {withCredentials: true}).then(( { data: { user } } ) => {
+    setTimeout(() => {
+      axios.get('/users/authorized', { withCredentials: true }).then(({ data: { user } }) => {
         this.setUserData(user, () => {
-          console.log(this.state);
+          console.log(this.state)
         })
-      })  
-    },1000)
+      })
+    }, 1000)
   }
 
 
   render() {
-    if (!this.state.user){
+    if (!this.state.user) {
       return (<Grid container spacing={24} justify="center" alignContent="center" alignItems="center">
-      <Grid item xs={12}>
-        <div style={this.wrapStyle}>
-          <h1 style={{textAlign: "center"}}>loading...</h1>
-          <LoadingSign />
-        </div>
-      </Grid>
-    </Grid>)
-    }
-    return (
-      <Router>
-        <div>
+        <Grid item xs={12}>
+          <div style={this.wrapStyle}>
+            <h1 style={{ textAlign: "center" }}>loading...</h1>
+            <LoadingSign />
+          </div>
+        </Grid>
+      </Grid>)
+    } else {
+      return (
+        <Switch>
           <Route exact path="/" render={(props) => this.state.user ? <Dashboard setUserData={this.setUserData} user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
           <Route path="/signup" render={(props) => <SignUpPage setUserData={this.setUserData} {...props} />} />
           <Route path="/login" render={(props) => <LoginPage setUserData={this.setUserData} {...props} />} />
@@ -61,8 +66,8 @@ export default class App extends Component {
           <Route exact path="/add-friend" render={(props) => this.state.user ? <AddFriend user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
           <Route exact path="/requests" render={(props) => this.state.user ? <RequestsPage user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
           <Route exact path="/friends" render={(props) => this.state.user ? <FriendsPage user={this.state.user} {...props} /> : <LoginPage setUserData={this.setUserData} {...props} />} />
-        </div>
-      </Router>
-    )
+        </Switch>
+      )
+    }
   }
 }

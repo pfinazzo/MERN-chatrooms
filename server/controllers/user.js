@@ -4,8 +4,9 @@ const {validToken, createToken} = require('../utilities/tokenService');
 
 function cookieCheck({signedCookies: {token}}, res) {
   if (token) {
-    validToken(token).then(({user: {username}}) => {
-      User.findOne({username}).then(({username, email}) => {
+    validToken(token).then(({user: {_id}}) => {
+      console.log(token, user)
+      User.findById(_id).then(({username, email}) => {
         return res.send({ username, email });
       }).catch(err => {
         if (err) throw err;
@@ -14,11 +15,11 @@ function cookieCheck({signedCookies: {token}}, res) {
       if (err) throw err;
     })
   } else {
-    res.json({err: "please log back in"});
+    res.send('please log back in');
   }
 }
 
-
+  
 function signup({body}, res) {
   User.create(body).then(user => {
       let token = createToken(user);
