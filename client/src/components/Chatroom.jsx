@@ -28,14 +28,18 @@ export default class Chatroom extends Component {
 
   inputWrapperStyle = {
     position: "absolute",
-    bottom: 40,
+    bottom: 70,
     display: "flex",
     width: "400px",
+    borderTop: "solid lightgrey .3px",
+    marginTop: 20,
     justifyContent: "space-evenly"
   }
 
   inputStyle = {
-    width: "70%"
+    width: "60%",
+    position: 'relative',
+    top: 10
   }
 
   buttonStyle = {
