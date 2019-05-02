@@ -1,5 +1,6 @@
 const router = require('express').Router(),
       {
+        authenticated, 
         getCurrentSentFriendRequests,
         getCurrentReceivedFriendRequests,
         deleteFriendRequest,
@@ -10,6 +11,7 @@ const router = require('express').Router(),
         unfriend
       } = require('./../controllers/friendRequests');
 
+router.use(authenticated);
 
 router.get('/', getCurrentUserFriends);
 

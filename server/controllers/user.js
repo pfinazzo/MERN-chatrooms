@@ -4,17 +4,22 @@ const {validToken, createToken} = require('../utilities/tokenService');
 
 function cookieCheck({signedCookies: {token}}, res) {
   if (token) {
-    validToken(token).then(({user: {_id}})=> {
-      User.findById(_id).then(user => {
-        if (user) {
-          let {username, email} = user;
-          return res.send({ username, email });
-        } else {
-          return res.send('please log back in')
-        }
-      }).catch(err => {
-        if (err) throw err;
-      })
+    console.log(token);
+    validToken(token).then(data => {
+      console.log(data);
+    //   User.findById(_id).then(user => {
+    //     if (user) {
+    //       let {username, email} = user;
+    //       return res.send({ username, email });
+    //     } else {
+    //       return res.send('please log back in')
+    //     }
+    //   }).catch(err => {
+    //     if (err) throw err;
+    //   })
+    // }).catch(err => {
+    //   if (err) throw err;
+    // })
     }).catch(err => {
       if (err) throw err;
     })
@@ -28,7 +33,7 @@ function signup({body}, res) {
   User.create(body).then(user => {
       let token = createToken(user);
       res.cookie('token', token, {
-        httpOnly: true, // only accessible from same origin
+        httpOnly: true, // only accessible from the server, JavaScript cannot access the token
         // secure: true, // only accessible over https, this will be commented back in for when its deployed
         maxAge: 1000 * 60 * 60, // one hour cookie age,
         signed: true 

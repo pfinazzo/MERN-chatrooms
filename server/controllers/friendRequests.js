@@ -2,32 +2,66 @@ const User = require('./../models/User'),
   FriendRequest = require('./../models/FriendRequest'),
   { validToken } = require('../utilities/tokenService');
 
-function getCurrentReceivedFriendRequests({ signedCookies: { token } }, res) {
-  validToken(token).then(user => {
-    let receiverId = user._id;
-    FriendRequest.find({
-      receiverId
-    }).populate('sender').then(receivedRequests => {
-      receivedRequests = receivedRequests.map(request => {
-        console.log(request);
-        if (!request.declined) {
-          let { sender: { username }, _id } = request;
-          return { username, _id };
+function authenticated({ signedCookies: { token } }, res, next) {
+  if (token) {
+    validToken(token).then(({ user: { _id } }) => {
+      User.findById(_id).then(user => {
+        if (user) {
+          next();
         } else {
-          return { username: null, _id: null }
+          res.end();
         }
       })
-      res.send(receivedRequests);
     }).catch(err => {
       if (err) throw err;
     })
-  }).catch(err => {
-    if (err) throw err;
-  })
+  } else {
+    res.end();
+  }
+}
+
+async function getCurrentReceivedFriendRequests({ signedCookies: { token } }, res) {
+  if (token) {
+    try {
+      let user = await validToken(token);
+      console.log(user);
+      if (user) {
+        let receiverId = user._id;
+        FriendRequest.find({
+          receiverId
+        }).populate('sender').then(receivedRequests => {
+          console.log(receivedRequests);
+          receivedRequests = receivedRequests.map(request => {
+            if (!request.declined) {
+              let { sender: { username }, _id } = request;
+              return { username, _id };
+            } else {
+              return { username: null, _id: null }
+            }
+          })
+          res.send(receivedRequests);
+        }).catch(err => {
+          if (err) throw err;
+        })
+      } else {
+        res.send('session expired please log back in');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+
+    // validToken(token).then(({user})=> {
+    //  
+    // }).catch(err => {
+    //   if (err) throw err;
+    // })
+  } else {
+    res.send('no user logged in');
+  }
 }
 
 function getCurrentSentFriendRequests({ signedCookies: { token } }, res) {
-  validToken(token).then(({ _id }) => {
+  validToken(token).then(({ user: { _id } }) => {
     let sender = _id;
     FriendRequest.find({ sender }).populate('receiver').then(sentRequests => {
       res.send(sentRequests.map(request => {
@@ -53,6 +87,7 @@ function deleteFriendRequest({ signedCookies: { token }, body: { id } }, res) {
 }
 
 function acceptFriendRequest({ signedCookies: { token }, body: { id } }, res) {
+
   FriendRequest.findById(id).populate('sender').populate('receiver').then(request => {
     request.sender.friends.push(request.receiver._id);
     request.receiver.friends.push(request.sender._id);
@@ -104,7 +139,7 @@ function unfriend(
     signedCookies: { token },
     body: { username }
   }, res) {
-  validToken(token).then(({ _id }) => {
+  validToken(token).then((({ user: { _id } }) => {
     let friendId;
     User.findOne({ username }).then(friend => {
       friendId = friend._id;
@@ -123,13 +158,13 @@ function unfriend(
     }).catch(err => {
       if (err) throw err;
     })
-  })
+  }))
 }
 
 function addFriend({ signedCookies: { token }, body }, res) {
   console.log(token);
   console.log(body);
-  validToken(token).then(({ username, _id }) => {
+  validToken(token).then(({ user: { username, _id } }) => {
     console.log(username)
     if (username !== body.username) {
       User.findOne(body).then(receiver => {
@@ -153,6 +188,7 @@ function addFriend({ signedCookies: { token }, body }, res) {
 }
 
 module.exports = {
+  authenticated,
   getCurrentSentFriendRequests,
   getCurrentReceivedFriendRequests,
   getCurrentUserFriends,
